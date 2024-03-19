@@ -42,6 +42,8 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      - name: Lint project
+        run: ${{ steps.detect-package-manager.outputs.runner }} run lint
       - name: Build project
         run: ${{ steps.detect-package-manager.outputs.runner }} run build
       - name: Upload artifact

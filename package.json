@@ -1,0 +1,11 @@
+{
+  "name": "homepage",
+  "version": "1.0.0",
+  "repository": "git@github.com:JohannesMerz/homepage.git",
+  "author": "JohannesMerz <johannes@bojagi.io>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "cp -r src dist"
+  }
+}

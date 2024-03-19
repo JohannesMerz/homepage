@@ -1,16 +1,21 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom';
-import { Home } from './domains/home';
-import { ErrorPage } from './domains/error-pages';
+import {
+  createHashRouter,
+  RouterProvider,
+  createRoutesFromElements,
+  Route,
+} from 'react-router-dom';
+import { ErrorPage } from './components/ErrorPage';
 
 const router = createHashRouter(
-  [
-    {
-      path: '/',
-      element: <Home />,
-      errorElement: <ErrorPage />,
-    },
-  ],
-  {}
+  createRoutesFromElements(
+    <Route path="/" errorElement={<ErrorPage />}>
+      <Route path="/" lazy={() => import('./apps/home')} />
+      <Route
+        path="/interval-timer"
+        lazy={() => import('./apps/interval-timer')}
+      />
+    </Route>
+  )
 );
 
 function App() {

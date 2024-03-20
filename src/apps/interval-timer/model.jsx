@@ -70,7 +70,7 @@ function getNextPhaseState(previous, program) {
 }
 
 function useWorkoutState(program) {
-  const [sessionState, setSessionState] = useState({
+  const [workoutState, setworkoutState] = useState({
     currentPhase: 'start',
     currentExercise: 0,
     currentRound: 0,
@@ -98,23 +98,23 @@ function useWorkoutState(program) {
   }, []);
 
   const startPhase = useCallback(
-    (sessionState) => {
-      console.log('start phase', sessionState.currentPhase);
-      const duration = program[sessionState.currentPhase];
+    (workoutState) => {
+      console.log('start phase', workoutState.currentPhase);
+      const duration = program[workoutState.currentPhase];
       // end previous phase
       if (currentPhase.current && currentPhase.current.timeout) {
         clearTimeout(currentPhase.current.timeout);
       }
 
       currentPhase.current = {
-        name: sessionState.currentPhase,
+        name: workoutState.currentPhase,
         active: true,
         currentPhase: true,
         duration,
         startTime: Date.now(),
         endTime: Date.now() + duration,
         timeout: setTimeout(() => {
-          setSessionState(getNextPhaseState(sessionState, program));
+          setworkoutState(getNextPhaseState(workoutState, program));
         }, duration),
       };
     },
@@ -138,37 +138,37 @@ function useWorkoutState(program) {
 
     if (currentPhase.current.remainingTime) {
       currentPhase.current.timeout = setTimeout(() => {
-        setSessionState(getNextPhaseState(sessionState, program));
+        setworkoutState(getNextPhaseState(workoutState, program));
       }, currentPhase.current.remainingTime);
       currentPhase.current.active = true;
     }
-  }, [program, sessionState]);
+  }, [program, workoutState]);
 
   useEffect(() => {
-    if (sessionState.ended) {
+    if (workoutState.ended) {
       clearPhase();
       return;
     }
     if (
-      sessionState.active &&
-      sessionState.currentPhase !== currentPhase.current.name
+      workoutState.active &&
+      workoutState.currentPhase !== currentPhase.current.name
     ) {
-      startPhase(sessionState);
+      startPhase(workoutState);
       return;
     }
-    if (sessionState.active && !currentPhase.current.active) {
+    if (workoutState.active && !currentPhase.current.active) {
       resumePhase();
       return;
     }
 
-    if (!sessionState.active && currentPhase.current.active) {
+    if (!workoutState.active && currentPhase.current.active) {
       pausePhase();
       return;
     }
-  }, [clearPhase, pausePhase, resumePhase, sessionState, startPhase]);
+  }, [clearPhase, pausePhase, resumePhase, workoutState, startPhase]);
 
   const start = useCallback(() => {
-    setSessionState({
+    setworkoutState({
       currentPhase: 'start',
       currentExercise: 0,
       currentRound: 0,
@@ -178,7 +178,7 @@ function useWorkoutState(program) {
   }, []);
 
   const reset = useCallback(() => {
-    setSessionState({
+    setworkoutState({
       currentPhase: 'start',
       currentExercise: 0,
       currentRound: 0,
@@ -188,12 +188,12 @@ function useWorkoutState(program) {
   }, []);
 
   const pause = useCallback(() => {
-    setSessionState({ ...sessionState, active: false });
-  }, [sessionState]);
+    setworkoutState({ ...workoutState, active: false });
+  }, [workoutState]);
 
   const resume = useCallback(() => {
-    setSessionState({ ...sessionState, active: true });
-  }, [sessionState]);
+    setworkoutState({ ...workoutState, active: true });
+  }, [workoutState]);
 
   return useMemo(
     () => ({
@@ -201,9 +201,9 @@ function useWorkoutState(program) {
       reset,
       pause,
       resume,
-      sessionState,
+      workoutState,
     }),
-    [pause, reset, resume, sessionState, start]
+    [pause, reset, resume, workoutState, start]
   );
 }
 

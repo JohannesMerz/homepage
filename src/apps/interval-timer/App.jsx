@@ -1,3 +1,4 @@
+import { GlobalStyles } from './GlobalStyles';
 import { WorkoutProvider } from './model';
 import { Workout } from './views/Workout';
 
@@ -13,6 +14,7 @@ const workoutProgram = {
 export function Component() {
   return (
     <WorkoutProvider program={workoutProgram}>
+      <GlobalStyles />
       <Workout></Workout>
     </WorkoutProvider>
   );

@@ -5,11 +5,10 @@ import {
   useRef,
   useState,
   useContext,
+  useMemo,
 } from 'react';
 
 const WorkoutContext = createContext();
-
-export const WorkoutProvider = WorkoutContext.Provider;
 
 const useWorkoutContext = () => useContext(WorkoutContext);
 
@@ -70,9 +69,7 @@ function getNextPhaseState(previous, program) {
   }
 }
 
-export function useWorkout() {
-  const program = useWorkoutContext();
-
+function useWorkoutState(program) {
   const [sessionState, setSessionState] = useState({
     currentPhase: 'start',
     currentExercise: 0,
@@ -170,31 +167,57 @@ export function useWorkout() {
     }
   }, [clearPhase, pausePhase, resumePhase, sessionState, startPhase]);
 
-  return {
-    start: useCallback(() => {
-      setSessionState({
-        currentPhase: 'start',
-        currentExercise: 0,
-        currentRound: 0,
-        active: true,
-        ended: false,
-      });
-    }, []),
-    reset: useCallback(() => {
-      setSessionState({
-        currentPhase: 'start',
-        currentExercise: 0,
-        currentRound: 0,
-        active: false,
-        ended: false,
-      });
-    }, []),
-    pause: useCallback(() => {
-      setSessionState({ ...sessionState, active: false });
-    }, [sessionState]),
-    resume: useCallback(() => {
-      setSessionState({ ...sessionState, active: true });
-    }, [sessionState]),
-    sessionState,
-  };
+  const start = useCallback(() => {
+    setSessionState({
+      currentPhase: 'start',
+      currentExercise: 0,
+      currentRound: 0,
+      active: true,
+      ended: false,
+    });
+  }, []);
+
+  const reset = useCallback(() => {
+    setSessionState({
+      currentPhase: 'start',
+      currentExercise: 0,
+      currentRound: 0,
+      active: false,
+      ended: false,
+    });
+  }, []);
+
+  const pause = useCallback(() => {
+    setSessionState({ ...sessionState, active: false });
+  }, [sessionState]);
+
+  const resume = useCallback(() => {
+    setSessionState({ ...sessionState, active: true });
+  }, [sessionState]);
+
+  return useMemo(
+    () => ({
+      start,
+      reset,
+      pause,
+      resume,
+      sessionState,
+    }),
+    [pause, reset, resume, sessionState, start]
+  );
+}
+
+export function WorkoutProvider({ program, children }) {
+  const workoutState = useWorkoutState(program);
+
+  return (
+    <WorkoutContext.Provider value={workoutState}>
+      {children}
+    </WorkoutContext.Provider>
+  );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useWorkout() {
+  return useWorkoutContext();
 }

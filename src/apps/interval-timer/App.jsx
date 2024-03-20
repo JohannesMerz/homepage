@@ -12,7 +12,7 @@ const workoutProgram = {
 
 export function Component() {
   return (
-    <WorkoutProvider value={workoutProgram}>
+    <WorkoutProvider program={workoutProgram}>
       <Workout></Workout>
     </WorkoutProvider>
   );

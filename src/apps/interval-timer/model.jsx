@@ -8,6 +8,8 @@ import {
   useMemo,
 } from 'react';
 
+const TICK_TIME_MS = 10;
+
 const WorkoutContext = createContext();
 
 const useWorkoutContext = () => useContext(WorkoutContext);
@@ -70,7 +72,7 @@ function getNextPhaseState(previous, program) {
 }
 
 function useWorkoutState(program) {
-  const [workoutState, setworkoutState] = useState({
+  const [workoutState, setWorkoutState] = useState({
     currentPhase: 'start',
     currentExercise: 0,
     currentRound: 0,
@@ -84,6 +86,50 @@ function useWorkoutState(program) {
     endTime: null,
     isActive: false,
   });
+
+  const workoutTimeUpdates = useRef({
+    start: null,
+    interval: null,
+    subscribers: [],
+  });
+
+  const notifySubscribers = useCallback(() => {
+    // lets start stupid to get a feeling without considering pause yet
+    const current = Date.now();
+    const phaseProgress = current - currentPhase.current.startTime;
+    const times = {
+      workoutStart: workoutTimeUpdates.current.start,
+      phaseStart: currentPhase.current.startTime,
+      current,
+      progress: current - workoutTimeUpdates.current.start,
+      phaseProgress,
+      phaseRemaining: currentPhase.current.duration - phaseProgress,
+    };
+    workoutTimeUpdates.current.subscribers.forEach((subscriber) => {
+      subscriber(times);
+    });
+  }, []);
+
+  const endTime = useCallback(() => {
+    notifySubscribers();
+    clearInterval(workoutTimeUpdates.current.interval);
+    workoutTimeUpdates.current.start = null;
+  }, []);
+
+  const startTime = useCallback(() => {
+    clearInterval(workoutTimeUpdates.current.interval);
+    workoutTimeUpdates.current.start = Date.now();
+
+    workoutTimeUpdates.current.interval = setInterval(
+      notifySubscribers,
+      TICK_TIME_MS
+    );
+  }, [notifySubscribers]);
+
+  const onTimeUpdates = useCallback(
+    (handler) => workoutTimeUpdates.current.subscribers.push(handler),
+    []
+  );
 
   const clearPhase = useCallback(() => {
     console.log('clear phase');
@@ -114,7 +160,8 @@ function useWorkoutState(program) {
         startTime: Date.now(),
         endTime: Date.now() + duration,
         timeout: setTimeout(() => {
-          setworkoutState(getNextPhaseState(workoutState, program));
+          setWorkoutState(getNextPhaseState(workoutState, program));
+          notifySubscribers();
         }, duration),
       };
     },
@@ -138,7 +185,7 @@ function useWorkoutState(program) {
 
     if (currentPhase.current.remainingTime) {
       currentPhase.current.timeout = setTimeout(() => {
-        setworkoutState(getNextPhaseState(workoutState, program));
+        setWorkoutState(getNextPhaseState(workoutState, program));
       }, currentPhase.current.remainingTime);
       currentPhase.current.active = true;
     }
@@ -168,31 +215,33 @@ function useWorkoutState(program) {
   }, [clearPhase, pausePhase, resumePhase, workoutState, startPhase]);
 
   const start = useCallback(() => {
-    setworkoutState({
+    setWorkoutState({
       currentPhase: 'start',
       currentExercise: 0,
       currentRound: 0,
       active: true,
       ended: false,
     });
-  }, []);
+    startTime();
+  }, [startTime]);
 
   const reset = useCallback(() => {
-    setworkoutState({
+    setWorkoutState({
       currentPhase: 'start',
       currentExercise: 0,
       currentRound: 0,
       active: false,
       ended: false,
     });
-  }, []);
+    endTime();
+  }, [endTime]);
 
   const pause = useCallback(() => {
-    setworkoutState({ ...workoutState, active: false });
+    setWorkoutState({ ...workoutState, active: false });
   }, [workoutState]);
 
   const resume = useCallback(() => {
-    setworkoutState({ ...workoutState, active: true });
+    setWorkoutState({ ...workoutState, active: true });
   }, [workoutState]);
 
   return useMemo(
@@ -202,8 +251,9 @@ function useWorkoutState(program) {
       pause,
       resume,
       workoutState,
+      onTimeUpdates,
     }),
-    [pause, reset, resume, workoutState, start]
+    [start, reset, pause, resume, workoutState, onTimeUpdates]
   );
 }
 

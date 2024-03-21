@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useWorkout } from '../model';
 import { Fullscreen } from '../components/Fullscreen';
+import { Times } from '../components/Times';
 
 const VARIANTS = {
   work: css`
@@ -42,6 +43,7 @@ export function Workout() {
     <Fullscreen>
       <Box variant={currentWorkout.workoutState.currentPhase}>
         <h2>Interval Timer</h2>
+        <Times></Times>
         {Object.entries(currentWorkout.workoutState).map(([key, value]) => (
           <p key={key}>
             {key}: {value.toString()}

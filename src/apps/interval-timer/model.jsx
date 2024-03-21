@@ -176,7 +176,7 @@ function useWorkoutState(program) {
         }, duration),
       };
     },
-    [program]
+    [notifySubscribers, program]
   );
 
   const pausePhase = useCallback(() => {

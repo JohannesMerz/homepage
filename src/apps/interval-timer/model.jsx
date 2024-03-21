@@ -97,24 +97,34 @@ function useWorkoutState(program) {
     // lets start stupid to get a feeling without considering pause yet
     const current = Date.now();
     const phaseProgress = current - currentPhase.current.startTime;
-    const times = {
-      workoutStart: workoutTimeUpdates.current.start,
-      phaseStart: currentPhase.current.startTime,
-      current,
-      progress: current - workoutTimeUpdates.current.start,
-      phaseProgress,
-      phaseRemaining: currentPhase.current.duration - phaseProgress,
-    };
+    const times =
+      workoutTimeUpdates.current.start === null
+        ? {
+            workoutStart: null,
+            phaseStart: null,
+            current,
+            progress: 0,
+            phaseProgress: 0,
+            phaseRemaining: currentPhase.current.duration,
+          }
+        : {
+            workoutStart: workoutTimeUpdates.current.start,
+            phaseStart: currentPhase.current.startTime,
+            current,
+            progress: current - workoutTimeUpdates.current.start,
+            phaseProgress,
+            phaseRemaining: currentPhase.current.duration - phaseProgress,
+          };
     workoutTimeUpdates.current.subscribers.forEach((subscriber) => {
       subscriber(times);
     });
   }, []);
 
   const endTime = useCallback(() => {
-    notifySubscribers();
     clearInterval(workoutTimeUpdates.current.interval);
     workoutTimeUpdates.current.start = null;
-  }, []);
+    notifySubscribers();
+  }, [notifySubscribers]);
 
   const startTime = useCallback(() => {
     clearInterval(workoutTimeUpdates.current.interval);
@@ -160,7 +170,8 @@ function useWorkoutState(program) {
         startTime: Date.now(),
         endTime: Date.now() + duration,
         timeout: setTimeout(() => {
-          setWorkoutState(getNextPhaseState(workoutState, program));
+          const next = getNextPhaseState(workoutState, program);
+          setWorkoutState(next);
           notifySubscribers();
         }, duration),
       };
@@ -194,6 +205,7 @@ function useWorkoutState(program) {
   useEffect(() => {
     if (workoutState.ended) {
       clearPhase();
+      endTime();
       return;
     }
     if (
@@ -212,7 +224,7 @@ function useWorkoutState(program) {
       pausePhase();
       return;
     }
-  }, [clearPhase, pausePhase, resumePhase, workoutState, startPhase]);
+  }, [clearPhase, pausePhase, resumePhase, workoutState, startPhase, endTime]);
 
   const start = useCallback(() => {
     setWorkoutState({

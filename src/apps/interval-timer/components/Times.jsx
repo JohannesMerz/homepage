@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWorkout } from '../model';
+import { Time } from './Time';
 
 export function Times() {
   const { onTimeUpdates } = useWorkout();
@@ -14,5 +15,9 @@ export function Times() {
     return null;
   }
 
-  return <div>time: {times.phaseProgress}ms</div>;
+  return (
+    <div>
+      time: <Time time={times.phaseRemaining}></Time>
+    </div>
+  );
 }

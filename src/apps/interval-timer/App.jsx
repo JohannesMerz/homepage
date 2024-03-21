@@ -6,8 +6,8 @@ const workoutProgram = {
   start: 0,
   work: 1 * 1000,
   rest: 5 * 1000,
-  exercises: 5,
-  rounds: 3,
+  exercises: 1,
+  rounds: 1,
   roundReset: 0,
 };
 

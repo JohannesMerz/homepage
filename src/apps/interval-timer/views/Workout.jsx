@@ -65,15 +65,20 @@ export function Workout() {
         </p>
 
         <p>
-          <button onClick={workoutStore.startWorkout}>start</button>
-        </p>
-        {/* <p>
-          {currentWorkout.workoutState.active ? (
-            <button onClick={currentWorkout.pause}>pause</button>
+          {['start', 'end'].includes(workoutStore.phase.name) ? (
+            <button onClick={workoutStore.startWorkout}>start</button>
           ) : (
-            <button onClick={currentWorkout.resume}>resume</button>
+            <button onClick={workoutStore.resetWorkout}>reset</button>
           )}
-        </p> */}
+        </p>
+
+        <p>
+          {workoutStore.workout.active ? (
+            <button onClick={workoutStore.pauseWorkout}>pause</button>
+          ) : (
+            <button onClick={workoutStore.resumeWorkout}>resume</button>
+          )}
+        </p>
         {/* <p>
           <button onClick={currentWorkout.reset}>reset</button>
         </p> */}

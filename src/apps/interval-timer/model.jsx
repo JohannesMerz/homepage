@@ -1,285 +1,151 @@
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  useMemo,
-} from 'react';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { createTrackedSelector } from 'react-tracked';
 
 const TICK_TIME_MS = 10;
 
-const WorkoutContext = createContext();
+function startInterval(state) {
+  state.workout.active = true;
+  state.internal.lastTickTime = Date.now();
+  const updateProgressCb = state.internal.updateProgress;
+  state.internal.interval = setInterval(() => updateProgressCb(), TICK_TIME_MS);
+}
 
-const useWorkoutContext = () => useContext(WorkoutContext);
+function stopInterval(state, updateProgress = true) {
+  console.log('clearing interval', state.internal.interval);
+  clearInterval(state.internal.interval);
+  state.internal.internal = null;
+  state.workout.active = false;
+  if (updateProgress) {
+    state.internal.updateProgress();
+  }
+}
 
-function getNextPhaseState(previous, program) {
-  switch (previous.currentPhase) {
+function setNextPhase(state) {
+  switch (state.phase.name) {
     case 'start':
-      return {
-        ...previous,
-        currentPhase: 'work',
-      };
-
     case 'roundReset':
-      return {
-        ...previous,
-        currentPhase: 'work',
-      };
-
+      state.phase.name = 'work';
+      state.phase.duration = state.program.work;
+      state.phase.progressMs = 0;
+      break;
     case 'work':
-      return {
-        ...previous,
-        currentPhase: 'rest',
-      };
-
+      state.phase.name = 'rest';
+      state.phase.duration = state.program.rest;
+      state.phase.progressMs = 0;
+      break;
     case 'rest': {
-      const isEndOfRound = previous.currentExercise === program.exercises - 1;
+      const isEndOfRound =
+        state.workout.currentExercise === state.program.exercises - 1;
       const isEndOfProgram =
-        isEndOfRound && previous.currentRound === program.rounds - 1;
-      const nextExercise = (previous.currentExercise + 1) % program.exercises;
+        isEndOfRound && state.workout.currentRound === state.program.rounds - 1;
+      const nextExercise =
+        (state.workout.currentExercise + 1) % state.program.exercises;
 
       if (isEndOfProgram) {
-        return {
-          currentPhase: 'end',
-          currentExercise: nextExercise,
-          currentRound: 0,
-          active: false,
-          ended: true,
-        };
+        state.phase.name = 'end';
+        state.phase.duration = 0;
+        state.phase.progressMs = 0;
+
+        state.workout.active = false;
+        state.workout.ended = true;
+        state.workout.progressMs =
+          Math.floor(state.workout.progressMs / 1000) * 1000;
+
+        stopInterval(state, false);
+
+        break;
       }
 
       if (isEndOfRound) {
-        return {
-          currentPhase: 'roundReset',
-          currentExercise: nextExercise,
-          currentRound: previous.currentRound + 1,
-          active: true,
-          ended: false,
-        };
+        state.phase.name = 'roundReset';
+        state.phase.duration = state.program.roundReset;
+        state.phase.progressMs = 0;
+
+        state.workout.currentExercise = 0;
+        state.workout.currentRound = state.workout.currentRound + 1;
+
+        break;
       }
 
-      return {
-        currentPhase: 'work',
-        currentExercise: nextExercise,
-        currentRound: previous.currentRound,
-        active: true,
-        ended: false,
-      };
+      state.phase.name = 'work';
+      state.phase.duration = state.program.work;
+      state.phase.progressMs = 0;
+
+      state.workout.currentExercise = nextExercise;
+
+      break;
     }
   }
 }
 
-function useWorkoutState(program) {
-  const [workoutState, setWorkoutState] = useState({
-    currentPhase: 'start',
-    currentExercise: 0,
-    currentRound: 0,
-    active: false,
-    ended: false,
-  });
-  const currentPhase = useRef({
-    name: null,
-    duration: null,
-    startTime: null,
-    endTime: null,
-    isActive: false,
-  });
-
-  const workoutTimeUpdates = useRef({
-    start: null,
-    interval: null,
-    subscribers: [],
-  });
-
-  const notifySubscribers = useCallback(() => {
-    // lets start stupid to get a feeling without considering pause yet
-    const current = Date.now();
-    const phaseProgress = current - currentPhase.current.startTime;
-    const times =
-      workoutTimeUpdates.current.start === null
-        ? {
-            workoutStart: null,
-            phaseStart: null,
-            current,
-            progress: 0,
-            phaseProgress: 0,
-            phaseRemaining: currentPhase.current.duration,
-          }
-        : {
-            workoutStart: workoutTimeUpdates.current.start,
-            phaseStart: currentPhase.current.startTime,
-            current,
-            progress: current - workoutTimeUpdates.current.start,
-            phaseProgress,
-            phaseRemaining: currentPhase.current.duration - phaseProgress,
-          };
-    workoutTimeUpdates.current.subscribers.forEach((subscriber) => {
-      subscriber(times);
-    });
-  }, []);
-
-  const endTime = useCallback(() => {
-    clearInterval(workoutTimeUpdates.current.interval);
-    workoutTimeUpdates.current.start = null;
-    notifySubscribers();
-  }, [notifySubscribers]);
-
-  const startTime = useCallback(() => {
-    clearInterval(workoutTimeUpdates.current.interval);
-    workoutTimeUpdates.current.start = Date.now();
-
-    workoutTimeUpdates.current.interval = setInterval(
-      notifySubscribers,
-      TICK_TIME_MS
-    );
-  }, [notifySubscribers]);
-
-  const onTimeUpdates = useCallback(
-    (handler) => workoutTimeUpdates.current.subscribers.push(handler),
-    []
-  );
-
-  const clearPhase = useCallback(() => {
-    console.log('clear phase');
-
-    currentPhase.current = {
-      name: null,
-      duration: null,
-      startTime: null,
-      endTime: null,
-      isActive: false,
-    };
-  }, []);
-
-  const startPhase = useCallback(
-    (workoutState) => {
-      console.log('start phase', workoutState.currentPhase);
-      const duration = program[workoutState.currentPhase];
-      // end previous phase
-      if (currentPhase.current && currentPhase.current.timeout) {
-        clearTimeout(currentPhase.current.timeout);
-      }
-
-      currentPhase.current = {
-        name: workoutState.currentPhase,
-        active: true,
-        currentPhase: true,
-        duration,
-        startTime: Date.now(),
-        endTime: Date.now() + duration,
-        timeout: setTimeout(() => {
-          const next = getNextPhaseState(workoutState, program);
-          setWorkoutState(next);
-          notifySubscribers();
-        }, duration),
-      };
+const workoutStore = create(
+  immer((set) => ({
+    setProgram: (program) => {
+      set((state) => {
+        state.program = program;
+        state.phase = {
+          name: 'start',
+          duration: state.program.start,
+          progressMs: 0,
+        };
+      });
     },
-    [notifySubscribers, program]
-  );
+    startWorkout: (program) => {
+      set((state) => {
+        if (program) {
+          state.program = program;
+        }
 
-  const pausePhase = useCallback(() => {
-    console.log('pause phase');
+        state.workout = {
+          currentExercise: 0,
+          currentRound: 0,
+          active: true,
+          ended: false,
+          progressMs: 0,
+        };
 
-    if (currentPhase.current) {
-      clearTimeout(currentPhase.current && currentPhase.current.timeout);
-      const passedTime = Date.now() - currentPhase.current.startTime;
-      currentPhase.current.remainingTime =
-        currentPhase.current.duration - passedTime;
-      currentPhase.current.active = false;
-    }
-  }, []);
+        state.phase = {
+          name: 'start',
+          duration: state.program.start,
+          progressMs: 0,
+        };
 
-  const resumePhase = useCallback(() => {
-    console.log('resume phase');
+        startInterval(state);
+      });
+    },
 
-    if (currentPhase.current.remainingTime) {
-      currentPhase.current.timeout = setTimeout(() => {
-        setWorkoutState(getNextPhaseState(workoutState, program));
-      }, currentPhase.current.remainingTime);
-      currentPhase.current.active = true;
-    }
-  }, [program, workoutState]);
+    internal: {
+      interval: null,
+      lastTickTime: null,
+      updateProgress: () => {
+        set((state) => {
+          const currentTime = Date.now();
+          const amountPassedMs = currentTime - state.internal.lastTickTime;
 
-  useEffect(() => {
-    if (workoutState.ended) {
-      clearPhase();
-      endTime();
-      return;
-    }
-    if (
-      workoutState.active &&
-      workoutState.currentPhase !== currentPhase.current.name
-    ) {
-      startPhase(workoutState);
-      return;
-    }
-    if (workoutState.active && !currentPhase.current.active) {
-      resumePhase();
-      return;
-    }
+          state.workout.progressMs = state.workout.progressMs + amountPassedMs;
+          state.phase.progressMs = state.phase.progressMs + amountPassedMs;
+          state.internal.lastTickTime = currentTime;
 
-    if (!workoutState.active && currentPhase.current.active) {
-      pausePhase();
-      return;
-    }
-  }, [clearPhase, pausePhase, resumePhase, workoutState, startPhase, endTime]);
+          if (state.phase.progressMs >= state.phase.duration) {
+            setNextPhase(state);
+          }
+        });
+      },
+    },
 
-  const start = useCallback(() => {
-    setWorkoutState({
-      currentPhase: 'start',
-      currentExercise: 0,
-      currentRound: 0,
-      active: true,
-      ended: false,
-    });
-    startTime();
-  }, [startTime]);
+    program: null,
 
-  const reset = useCallback(() => {
-    setWorkoutState({
-      currentPhase: 'start',
+    workout: {
       currentExercise: 0,
       currentRound: 0,
       active: false,
       ended: false,
-    });
-    endTime();
-  }, [endTime]);
+      progressMs: 0,
+    },
 
-  const pause = useCallback(() => {
-    setWorkoutState({ ...workoutState, active: false });
-  }, [workoutState]);
+    phase: null,
+  }))
+);
 
-  const resume = useCallback(() => {
-    setWorkoutState({ ...workoutState, active: true });
-  }, [workoutState]);
-
-  return useMemo(
-    () => ({
-      start,
-      reset,
-      pause,
-      resume,
-      workoutState,
-      onTimeUpdates,
-    }),
-    [start, reset, pause, resume, workoutState, onTimeUpdates]
-  );
-}
-
-export function WorkoutProvider({ program, children }) {
-  const workoutState = useWorkoutState(program);
-
-  return (
-    <WorkoutContext.Provider value={workoutState}>
-      {children}
-    </WorkoutContext.Provider>
-  );
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export function useWorkout() {
-  return useWorkoutContext();
-}
+export const useWorkoutStore = createTrackedSelector(workoutStore);

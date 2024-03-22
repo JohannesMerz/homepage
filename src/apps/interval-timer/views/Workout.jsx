@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWorkout } from '../model';
+import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/Fullscreen';
 import { Times } from '../components/Times';
 
@@ -36,34 +36,47 @@ const Box = styled.div`
   align-items: center;
 `;
 
+// currentExercise: 0,
+//           currentRound: 0,
+//           active: true,
+//           ended: false,
+//           progressMs: 0,
+
 export function Workout() {
-  const currentWorkout = useWorkout();
-  console.log(currentWorkout);
+  const workoutStore = useWorkoutStore();
+  console.log('update workout component');
 
   return (
     <Fullscreen>
-      <Box variant={currentWorkout.workoutState.currentPhase}>
+      <Box variant={workoutStore.phase.name}>
         <h2>Interval Timer</h2>
+        <p>current phase: {workoutStore.phase.name}</p>
         <Times></Times>
-        {Object.entries(currentWorkout.workoutState).map(([key, value]) => (
-          <p key={key}>
-            {key}: {value.toString()}
-          </p>
-        ))}
+        <p>active: {workoutStore.workout.active.toString()}</p>
+        <p>ended: {workoutStore.workout.ended.toString()}</p>
 
         <p>
-          <button onClick={currentWorkout.start}>start</button>
+          exercise: {workoutStore.workout.currentExercise + 1}/
+          {workoutStore.program.exercises}
         </p>
         <p>
+          round: {workoutStore.workout.currentRound + 1}/
+          {workoutStore.program.rounds}
+        </p>
+
+        <p>
+          <button onClick={workoutStore.startWorkout}>start</button>
+        </p>
+        {/* <p>
           {currentWorkout.workoutState.active ? (
             <button onClick={currentWorkout.pause}>pause</button>
           ) : (
             <button onClick={currentWorkout.resume}>resume</button>
           )}
-        </p>
-        <p>
+        </p> */}
+        {/* <p>
           <button onClick={currentWorkout.reset}>reset</button>
-        </p>
+        </p> */}
         <Link to="/">Home</Link>
       </Box>
     </Fullscreen>

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Box = styled.div``;
+const Box = styled.span``;
 
 export function Time({ time }) {
   const secondsExact = time / 1000;

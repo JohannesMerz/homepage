@@ -8,7 +8,7 @@ import {
   setProgram,
   resumeWorkout,
   resetWorkout,
-} from './atomics';
+} from './methods';
 
 const workoutStore = create(
   immer((set) => ({

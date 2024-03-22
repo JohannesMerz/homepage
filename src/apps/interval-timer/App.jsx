@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { GlobalStyles } from './GlobalStyles';
-import { WorkoutProvider } from './model';
+import { useWorkoutStore } from './model';
 import { Workout } from './views/Workout';
 
 const workoutProgram = {
@@ -12,11 +13,17 @@ const workoutProgram = {
 };
 
 export function Component() {
+  const workoutStore = useWorkoutStore();
+
+  useEffect(() => {
+    workoutStore.setProgram(workoutProgram);
+  }, [workoutStore]);
+
   return (
-    <WorkoutProvider program={workoutProgram}>
+    <>
       <GlobalStyles />
-      <Workout></Workout>
-    </WorkoutProvider>
+      {workoutStore.program ? <Workout></Workout> : null}
+    </>
   );
 }
 Component.displayName = 'IntervalTimer';

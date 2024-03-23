@@ -3,9 +3,8 @@ import styled, { css } from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Times } from '../components/store-consumers/Times';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { useValueChange } from '../hooks/useValueChange';
-import { createAudioContext } from '../lib/sound';
 import { useInitSound, useSound } from '../hooks/useSound';
 
 const VARIANTS = {

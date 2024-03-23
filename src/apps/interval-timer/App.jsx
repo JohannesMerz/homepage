@@ -5,12 +5,12 @@ import { Workout } from './views/Workout';
 import { SoundProvider } from './hooks/useSound';
 
 const workoutSettings = {
-  start: 0,
-  work: 1 * 1000,
-  rest: 5 * 1000,
-  exercises: 1,
-  rounds: 1,
+  start: 10 * 1000,
+  work: 10 * 1000,
+  rest: 15 * 1000,
   roundReset: 0,
+  exercises: 2,
+  rounds: 2,
 };
 
 export function Component() {

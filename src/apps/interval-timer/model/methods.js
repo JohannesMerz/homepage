@@ -75,6 +75,11 @@ function stopInterval(state) {
 }
 
 function setNextPhase(state) {
+  const isEndOfRound =
+    state.workout.currentExercise === state.settings.exercises - 1;
+  const isEndOfWorkout =
+    isEndOfRound && state.workout.currentRound === state.settings.rounds - 1;
+
   switch (state.phase.name) {
     case 'start':
     case 'roundReset':
@@ -82,20 +87,8 @@ function setNextPhase(state) {
       state.phase.duration = state.settings.work;
       state.phase.progressMs = 0;
       break;
-    case 'work':
-      state.phase.name = 'rest';
-      state.phase.duration = state.settings.rest;
-      state.phase.progressMs = 0;
-      break;
-    case 'rest': {
-      const isEndOfRound =
-        state.workout.currentExercise === state.settings.exercises - 1;
-      const isEndOfWorkout =
-        isEndOfRound &&
-        state.workout.currentRound === state.settings.rounds - 1;
-      const nextExercise =
-        (state.workout.currentExercise + 1) % state.settings.exercises;
 
+    case 'work':
       if (isEndOfWorkout) {
         state.phase.name = 'end';
         state.phase.duration = 0;
@@ -110,6 +103,15 @@ function setNextPhase(state) {
 
         break;
       }
+
+      state.phase.name = 'rest';
+      state.phase.duration = state.settings.rest;
+      state.phase.progressMs = 0;
+      break;
+
+    case 'rest': {
+      const nextExercise =
+        (state.workout.currentExercise + 1) % state.settings.exercises;
 
       if (isEndOfRound) {
         state.phase.name = 'roundReset';

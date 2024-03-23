@@ -4,8 +4,8 @@ export function useValueChange(value, cb) {
   const prev = useRef(value);
   useEffect(() => {
     if (value !== prev.current) {
-      prev.current = value;
       cb(value, prev.current);
+      prev.current = value;
     }
   }, [cb, value]);
 }

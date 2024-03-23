@@ -4,8 +4,8 @@ import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Times } from '../components/store-consumers/Times';
 import { useCallback } from 'react';
-import { useValueChange } from '../hooks/useValueChange';
-import { useInitSound, useSound } from '../hooks/useSound';
+import { useInitSound } from '../hooks/useSound';
+import { Sounds } from '../components/store-consumers/Sounds';
 
 const VARIANTS = {
   work: css`
@@ -42,36 +42,6 @@ const Box = styled.div`
 export function Workout() {
   const workoutStore = useWorkoutStore();
 
-  const soundApi = useSound();
-
-  useValueChange(
-    workoutStore.phase.name,
-    useCallback(
-      (phase) => {
-        if (!soundApi) {
-          return;
-        }
-
-        if (phase === 'work') {
-          soundApi.playNote({
-            note: 'A',
-            octave: 4,
-            type: 'triangle',
-            duration: 750,
-          });
-        } else {
-          soundApi.playNote({
-            note: 'A',
-            octave: 5,
-            type: 'triangle',
-            duration: 750,
-          });
-        }
-      },
-      [soundApi]
-    )
-  );
-
   const startWorkout = workoutStore.startWorkout;
   const initSound = useInitSound();
   const start = useCallback(() => {
@@ -84,6 +54,7 @@ export function Workout() {
       <Box variant={workoutStore.phase.name}>
         <h2>Interval Timer</h2>
         <p>current phase: {workoutStore.phase.name}</p>
+        <Sounds></Sounds>
         <Times></Times>
         <p>active: {workoutStore.workout.active.toString()}</p>
         <p>ended: {workoutStore.workout.ended.toString()}</p>

@@ -5,15 +5,15 @@ import {
   updateProgress,
   startWorkout,
   pauseWorkout,
-  setProgram,
+  setSettings,
   resumeWorkout,
   resetWorkout,
 } from './methods';
 
 const workoutStore = create(
   immer((set) => ({
-    setProgram: (program) => {
-      set((state) => setProgram(state, program));
+    setSettings: (settings) => {
+      set((state) => setSettings(state, settings));
     },
     startWorkout: () => {
       set(startWorkout);
@@ -36,7 +36,7 @@ const workoutStore = create(
       },
     },
 
-    program: null,
+    settings: null,
 
     workout: {
       currentExercise: 0,

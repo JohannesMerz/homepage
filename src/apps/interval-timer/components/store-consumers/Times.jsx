@@ -1,5 +1,5 @@
-import { useWorkoutStore } from '../model';
-import { Time } from './Time';
+import { useWorkoutStore } from '../../model';
+import { Time } from '../atomics/Time';
 
 export function Times() {
   const workoutStore = useWorkoutStore();

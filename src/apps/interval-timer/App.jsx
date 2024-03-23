@@ -3,7 +3,7 @@ import { GlobalStyles } from './GlobalStyles';
 import { useWorkoutStore } from './model';
 import { Workout } from './views/Workout';
 
-const workoutProgram = {
+const workoutSettings = {
   start: 0,
   work: 1 * 1000,
   rest: 5 * 1000,
@@ -16,13 +16,13 @@ export function Component() {
   const workoutStore = useWorkoutStore();
 
   useEffect(() => {
-    workoutStore.setProgram(workoutProgram);
+    workoutStore.setSettings(workoutSettings);
   }, [workoutStore]);
 
   return (
     <>
       <GlobalStyles />
-      {workoutStore.program ? <Workout></Workout> : null}
+      {workoutStore.settings ? <Workout></Workout> : null}
     </>
   );
 }

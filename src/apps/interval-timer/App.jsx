@@ -8,7 +8,7 @@ const workoutSettings = {
   start: 0,
   work: 1 * 1000,
   rest: 5 * 1000,
-  exercises: 1,
+  exercises: 2,
   rounds: 1,
   roundReset: 0,
 };

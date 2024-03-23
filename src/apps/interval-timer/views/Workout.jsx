@@ -4,8 +4,7 @@ import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Times } from '../components/store-consumers/Times';
 import { useCallback } from 'react';
-import { useValueChange } from '../hooks/useValueChange';
-import { useInitSound, useSound } from '../hooks/useSound';
+import { useInitSound } from '../hooks/useSound';
 import { Sounds } from '../components/store-consumers/Sounds';
 
 const VARIANTS = {

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useValueChange } from './useValueChange';
 
-export function useAtThreshold(direction, threshold, value, cb) {
+export function useAtThresholdPassed(direction, threshold, value, cb) {
   return useValueChange(
     value,
     useCallback(

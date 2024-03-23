@@ -8,9 +8,9 @@ const workoutSettings = {
   start: 10 * 1000,
   work: 10 * 1000,
   rest: 15 * 1000,
-  exercises: 2,
-  rounds: 1,
   roundReset: 0,
+  exercises: 2,
+  rounds: 2,
 };
 
 export function Component() {

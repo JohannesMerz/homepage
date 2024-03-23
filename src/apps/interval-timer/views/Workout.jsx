@@ -3,6 +3,9 @@ import styled, { css } from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Times } from '../components/store-consumers/Times';
+import { useCallback, useRef } from 'react';
+import { useValueChange } from '../hooks/useValueChange';
+import { createAudioContext } from '../lib/sound';
 
 const VARIANTS = {
   work: css`
@@ -39,6 +42,32 @@ const Box = styled.div`
 export function Workout() {
   const workoutStore = useWorkoutStore();
 
+  const audiContext = useRef();
+
+  useValueChange(
+    workoutStore.phase.name,
+    useCallback(() => {
+      if (!audiContext.current) {
+        return;
+      }
+      const playNote = audiContext.current.withDuration(750)(
+        audiContext.current.playNote
+      );
+
+      if (workoutStore.phase.name === 'work') {
+        playNote({ note: 'A', octave: 4, type: 'triangle' });
+      } else {
+        playNote({ note: 'A', octave: 5, type: 'triangle' });
+      }
+    }, [workoutStore])
+  );
+
+  const startWorkout = workoutStore.startWorkout;
+  const start = useCallback(() => {
+    audiContext.current = createAudioContext();
+    startWorkout();
+  }, [startWorkout]);
+
   return (
     <Fullscreen>
       <Box variant={workoutStore.phase.name}>
@@ -59,7 +88,7 @@ export function Workout() {
 
         <p>
           {['start', 'end'].includes(workoutStore.phase.name) ? (
-            <button onClick={workoutStore.startWorkout}>start</button>
+            <button onClick={start}>start</button>
           ) : (
             <button onClick={workoutStore.resetWorkout}>reset</button>
           )}

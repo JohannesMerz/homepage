@@ -5,7 +5,7 @@ export function useValueChange(value, cb) {
   useEffect(() => {
     if (value !== prev.current) {
       prev.current = value;
-      cb(value);
+      cb(value, prev.current);
     }
   }, [cb, value]);
 }

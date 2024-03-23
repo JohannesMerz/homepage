@@ -6,6 +6,7 @@ import { Times } from '../components/store-consumers/Times';
 import { useCallback, useRef } from 'react';
 import { useValueChange } from '../hooks/useValueChange';
 import { createAudioContext } from '../lib/sound';
+import { useInitSound, useSound } from '../hooks/useSound';
 
 const VARIANTS = {
   work: css`
@@ -42,31 +43,42 @@ const Box = styled.div`
 export function Workout() {
   const workoutStore = useWorkoutStore();
 
-  const audiContext = useRef();
+  const soundApi = useSound();
 
   useValueChange(
     workoutStore.phase.name,
-    useCallback(() => {
-      if (!audiContext.current) {
-        return;
-      }
-      const playNote = audiContext.current.withDuration(750)(
-        audiContext.current.playNote
-      );
+    useCallback(
+      (phase) => {
+        if (!soundApi) {
+          return;
+        }
 
-      if (workoutStore.phase.name === 'work') {
-        playNote({ note: 'A', octave: 4, type: 'triangle' });
-      } else {
-        playNote({ note: 'A', octave: 5, type: 'triangle' });
-      }
-    }, [workoutStore])
+        if (phase === 'work') {
+          soundApi.playNote({
+            note: 'A',
+            octave: 4,
+            type: 'triangle',
+            duration: 750,
+          });
+        } else {
+          soundApi.playNote({
+            note: 'A',
+            octave: 5,
+            type: 'triangle',
+            duration: 750,
+          });
+        }
+      },
+      [soundApi]
+    )
   );
 
   const startWorkout = workoutStore.startWorkout;
+  const initSound = useInitSound();
   const start = useCallback(() => {
-    audiContext.current = createAudioContext();
+    initSound();
     startWorkout();
-  }, [startWorkout]);
+  }, [startWorkout, initSound]);
 
   return (
     <Fullscreen>

@@ -10,7 +10,7 @@ export function Time({ time }) {
 
   return (
     <Box>
-      {seconds}.{hundreds}s
+      {seconds.toString()}.{hundreds.toString().padEnd(2, '0')}s
     </Box>
   );
 }

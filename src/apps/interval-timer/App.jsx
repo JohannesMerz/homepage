@@ -5,9 +5,9 @@ import { Workout } from './views/Workout';
 import { SoundProvider } from './hooks/useSound';
 
 const workoutSettings = {
-  start: 0,
-  work: 1 * 1000,
-  rest: 5 * 1000,
+  start: 10 * 1000,
+  work: 10 * 1000,
+  rest: 15 * 1000,
   exercises: 2,
   rounds: 1,
   roundReset: 0,

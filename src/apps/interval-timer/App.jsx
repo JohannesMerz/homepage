@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { GlobalStyles } from './GlobalStyles';
 import { useWorkoutStore } from './model';
 import { Workout } from './views/Workout';
+import { SoundProvider } from './hooks/useSound';
 
 const workoutSettings = {
   start: 0,
@@ -20,10 +21,10 @@ export function Component() {
   }, [workoutStore]);
 
   return (
-    <>
+    <SoundProvider>
       <GlobalStyles />
       {workoutStore.settings ? <Workout></Workout> : null}
-    </>
+    </SoundProvider>
   );
 }
 Component.displayName = 'IntervalTimer';

@@ -3,11 +3,11 @@
 
 const TICK_TIME_MS = 10;
 
-export function setProgram(state, program) {
-  state.program = program;
+export function setSettings(state, settings) {
+  state.settings = settings;
   state.phase = {
     name: 'start',
-    duration: state.program.start,
+    duration: state.settings.start,
     progressMs: 0,
   };
 }
@@ -54,7 +54,7 @@ function initWorkoutState(state) {
 
   state.phase = {
     name: 'start',
-    duration: state.program.start,
+    duration: state.settings.start,
     progressMs: 0,
   };
 }
@@ -79,23 +79,24 @@ function setNextPhase(state) {
     case 'start':
     case 'roundReset':
       state.phase.name = 'work';
-      state.phase.duration = state.program.work;
+      state.phase.duration = state.settings.work;
       state.phase.progressMs = 0;
       break;
     case 'work':
       state.phase.name = 'rest';
-      state.phase.duration = state.program.rest;
+      state.phase.duration = state.settings.rest;
       state.phase.progressMs = 0;
       break;
     case 'rest': {
       const isEndOfRound =
-        state.workout.currentExercise === state.program.exercises - 1;
-      const isEndOfProgram =
-        isEndOfRound && state.workout.currentRound === state.program.rounds - 1;
+        state.workout.currentExercise === state.settings.exercises - 1;
+      const isEndOfWorkout =
+        isEndOfRound &&
+        state.workout.currentRound === state.settings.rounds - 1;
       const nextExercise =
-        (state.workout.currentExercise + 1) % state.program.exercises;
+        (state.workout.currentExercise + 1) % state.settings.exercises;
 
-      if (isEndOfProgram) {
+      if (isEndOfWorkout) {
         state.phase.name = 'end';
         state.phase.duration = 0;
         state.phase.progressMs = 0;
@@ -112,7 +113,7 @@ function setNextPhase(state) {
 
       if (isEndOfRound) {
         state.phase.name = 'roundReset';
-        state.phase.duration = state.program.roundReset;
+        state.phase.duration = state.settings.roundReset;
         state.phase.progressMs = 0;
 
         state.workout.currentExercise = 0;
@@ -122,7 +123,7 @@ function setNextPhase(state) {
       }
 
       state.phase.name = 'work';
-      state.phase.duration = state.program.work;
+      state.phase.duration = state.settings.work;
       state.phase.progressMs = 0;
 
       state.workout.currentExercise = nextExercise;

@@ -28,6 +28,8 @@ export function createAudioContext() {
   }
 
   const context = new AudioContext();
+  const volumeControl = context.createGain();
+  volumeControl.connect(context.destination);
 
   async function playFrequency({
     frequency,
@@ -36,21 +38,18 @@ export function createAudioContext() {
     volume = 1,
   }) {
     const osc = context.createOscillator();
-    const volumeControl = context.createGain();
 
     osc.frequency.value = frequency;
     osc.type = type;
     volumeControl.gain.setValueAtTime(volume, context.currentTime);
 
     osc.connect(volumeControl);
-    volumeControl.connect(context.destination);
 
     osc.start(0);
 
     await sleep(duration);
     osc.stop(0);
     osc.disconnect(volumeControl);
-    volumeControl.disconnect(context.destination);
 
     return osc;
   }

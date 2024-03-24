@@ -20,7 +20,7 @@ export function Sounds() {
             octave: 5,
             type: 'sine',
             duration: 750,
-            volume: 0.5,
+            volume: 0.8,
           });
       }
     },
@@ -39,7 +39,7 @@ export function Sounds() {
             octave: 4,
             type: 'sine',
             duration: 750,
-            volume: 0.2,
+            volume: 0.5,
           });
       }
     }

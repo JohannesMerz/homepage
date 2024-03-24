@@ -11,7 +11,7 @@ const Box = styled.div`
   justify-content: flex-start;
   flex-direction: row;
   flex-grow: 1;
-  margin: 0 8rem;
+  margin: 0 4rem;
 `;
 
 const DynamicGap = styled.div`

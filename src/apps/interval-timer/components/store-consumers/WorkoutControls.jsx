@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { VARIANTS } from '../../Theme';
 import { useWorkoutStore } from '../../model';
 import { Button } from '../atomics/Button';
 import { FiPlay, FiPause, FiX } from 'react-icons/fi';
 import { useInitSound } from '../../hooks/useSound';
 import styled from 'styled-components';
+import { useWakeLock } from '../../hooks/useWakeLock';
 
 const Box = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ const DynamicGap = styled.div`
 export function WorkoutControls() {
   const workoutStore = useWorkoutStore();
   const initSound = useInitSound();
+  const wakeLock = useWakeLock();
 
   const color = VARIANTS[workoutStore.phase.name].color;
   const size = '48';
@@ -30,7 +32,15 @@ export function WorkoutControls() {
   const start = useCallback(() => {
     initSound();
     startWorkout();
-  }, [startWorkout, initSound]);
+  }, [initSound, startWorkout]);
+
+  useEffect(() => {
+    if (workoutStore.workout.active) {
+      wakeLock.requestWakeLock();
+    } else {
+      wakeLock.releaseWakeLock();
+    }
+  }, [wakeLock, workoutStore.workout.active]);
 
   return (
     <Box>

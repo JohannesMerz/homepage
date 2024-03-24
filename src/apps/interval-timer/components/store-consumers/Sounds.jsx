@@ -18,8 +18,9 @@ export function Sounds() {
           soundApi.playNote({
             note: 'A',
             octave: 5,
-            type: 'triangle',
+            type: 'sine',
             duration: 750,
+            volume: 0.8,
           });
       }
     },
@@ -36,8 +37,9 @@ export function Sounds() {
           soundApi.playNote({
             note: 'A',
             octave: 4,
-            type: 'triangle',
+            type: 'sine',
             duration: 750,
+            volume: 0.5,
           });
       }
     }

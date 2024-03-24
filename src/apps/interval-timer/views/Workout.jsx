@@ -22,6 +22,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   padding: 1rem;
+  gap: 6px;
 `;
 
 const HeaderContent = styled.div`

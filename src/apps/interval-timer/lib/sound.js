@@ -24,7 +24,17 @@ const FADE_OUT_MS = 100;
 export function createAudioContext() {
   if (!window.AudioContext) {
     if (!window.webkitAudioContext) {
-      return;
+      return {
+        playFrequency: () => {
+          console.log(
+            'AudioContext is not supported, i would play a sound now'
+          );
+        },
+        playNote: () => {
+          console.log('AudioContext is not supported, i would play a note now');
+        },
+        apiEnabled: false,
+      };
     }
     window.AudioContext = window.webkitAudioContext;
   }
@@ -83,5 +93,6 @@ export function createAudioContext() {
   return {
     playFrequency,
     playNote,
+    apiEnabled: true,
   };
 }

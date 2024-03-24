@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
-import { Times } from '../components/store-consumers/Times';
 import { useCallback } from 'react';
 import { useInitSound } from '../hooks/useSound';
 import { Sounds } from '../components/store-consumers/Sounds';

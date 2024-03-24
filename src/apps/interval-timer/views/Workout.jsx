@@ -21,15 +21,19 @@ const Header = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 2rem 2rem;
   gap: 6px;
+
+  @media (min-width: 450px) {
+    width: 450px;
+  }
 `;
 
 const HeaderContent = styled.div`
   flex-grow: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
 `;
 
 const Box = styled.div`

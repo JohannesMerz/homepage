@@ -7,10 +7,11 @@ import styled from 'styled-components';
 
 const SettingsInput = styled.div`
   position: fixed;
-  top: 70px;
+  top: 80px;
   left: 0;
-  width: 100%;
+  width: calc(100% - 2rem);
   height: 80%;
+  margin: 1rem;
   background-color: ${VARIANTS.start.bgColor};
   border: 2px solid ${VARIANTS.start.color};
   border-radius: 6px;

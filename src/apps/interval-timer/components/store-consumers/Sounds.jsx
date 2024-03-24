@@ -4,76 +4,94 @@ import { useValueChange } from '../../hooks/useValueChange';
 import { useWorkoutStore } from '../../model';
 import { useAtThresholdPassed } from '../../hooks/useAtThresholdPassed';
 import { Button } from '../atomics/Button';
-import { FiVolumeX, FiVolume2 } from 'react-icons/fi';
+import { FiVolumeX, FiVolume1, FiVolume2 } from 'react-icons/fi';
+
 export function Sounds() {
   const workoutStore = useWorkoutStore();
   const soundApi = useSound();
 
   const [globalVolume, setGlobalVolume] = useState(1);
+  const [playing, setPlaying] = useState(false);
 
-  const playStartNote = useCallback(
-    (phase) => {
+  const useSoundEnv = useCallback(
+    (fn) => {
+      const playNote = async (props) => {
+        setPlaying(true);
+        const result = await soundApi.playNote({
+          ...props,
+          volume: props.volume * globalVolume,
+        });
+        setPlaying(false);
+        return result;
+      };
+
+      return (...args) => fn(playNote, ...args);
+    },
+    [globalVolume, soundApi]
+  );
+
+  const playStartNote = useSoundEnv(
+    useCallback((playNote, phase) => {
       switch (phase) {
         case 'work':
         case 'rest':
         case 'roundReset':
         case 'end':
-          soundApi.playNote({
+          return playNote({
             note: 'A',
             octave: 5,
             type: 'sine',
             duration: 660,
-            volume: 0.8 * globalVolume,
+            volume: 0.8,
           });
       }
-    },
-    [globalVolume, soundApi]
+    }, [])
   );
 
-  const playCountdownNote = useCallback(() => {
-    if (workoutStore.phase.duration > 5000) {
-      switch (workoutStore.phase.name) {
-        case 'start':
-        case 'work':
-        case 'rest':
-        case 'roundReset':
-          soundApi.playNote({
-            note: 'A',
-            octave: 4,
-            type: 'sine',
-            duration: 660,
-            volume: 0.5 * globalVolume,
-          });
-      }
-    }
-  }, [
-    globalVolume,
-    soundApi,
-    workoutStore.phase.duration,
-    workoutStore.phase.name,
-  ]);
+  const playCountdownNote = useSoundEnv(
+    useCallback(
+      (playNote) => {
+        if (workoutStore.phase.duration > 5000) {
+          switch (workoutStore.phase.name) {
+            case 'start':
+            case 'work':
+            case 'rest':
+            case 'roundReset':
+              return playNote({
+                note: 'A',
+                octave: 4,
+                type: 'sine',
+                duration: 660,
+                volume: 0.5,
+              });
+          }
+        }
+      },
+      [workoutStore.phase.duration, workoutStore.phase.name]
+    )
+  );
 
-  const playGetReadyNote = useCallback(() => {
-    if (workoutStore.phase.duration > 5000) {
-      switch (workoutStore.phase.name) {
-        case 'start':
-        case 'rest':
-        case 'roundReset':
-          soundApi.playNote({
-            note: 'A',
-            octave: 4,
-            type: 'sine',
-            duration: 660,
-            volume: 0.5 * globalVolume,
-          });
-      }
-    }
-  }, [
-    globalVolume,
-    soundApi,
-    workoutStore.phase.duration,
-    workoutStore.phase.name,
-  ]);
+  const playGetReadyNote = useSoundEnv(
+    useCallback(
+      (playNote) => {
+        if (workoutStore.phase.duration > 5000) {
+          switch (workoutStore.phase.name) {
+            case 'start':
+            case 'rest':
+            case 'roundReset':
+              return playNote({
+                note: 'A',
+                octave: 4,
+                type: 'sine',
+                duration: 660,
+                volume: 0.5,
+              });
+          }
+        }
+      },
+      [workoutStore.phase.duration, workoutStore.phase.name]
+    )
+  );
 
   const timeLeftMs =
     workoutStore.phase.duration - workoutStore.phase.progressMs;
@@ -84,7 +102,8 @@ export function Sounds() {
 
   useValueChange(workoutStore.phase.name, playStartNote);
 
-  const SoundIcon = globalVolume === 1 ? FiVolume2 : FiVolumeX;
+  const SoundIcon =
+    globalVolume === 0 ? FiVolumeX : playing === true ? FiVolume2 : FiVolume1;
 
   return (
     <Button

@@ -29,25 +29,44 @@ export function createAudioContext() {
 
   const context = new AudioContext();
 
-  async function playFrequency({ frequency, type = 'sine', duration }) {
+  async function playFrequency({
+    frequency,
+    type = 'sine',
+    duration = 1000,
+    volume = 1,
+  }) {
     const osc = context.createOscillator();
+    const volumeControl = context.createGain();
+
     osc.frequency.value = frequency;
     osc.type = type;
-    osc.connect(context.destination);
+    volumeControl.gain.setValueAtTime(volume, context.currentTime);
+
+    osc.connect(volumeControl);
+    volumeControl.connect(context.destination);
+
     osc.start(0);
-    if (duration) {
-      await sleep(duration);
-      osc.stop(0);
-      osc.disconnect(context.destination);
-    }
+
+    await sleep(duration);
+    osc.stop(0);
+    osc.disconnect(volumeControl);
+    volumeControl.disconnect(context.destination);
+
     return osc;
   }
 
-  async function playNote({ note = 'A', octave = 4, type = 'sine', duration }) {
+  async function playNote({
+    note = 'A',
+    octave = 4,
+    type = 'sine',
+    duration,
+    volume,
+  }) {
     return playFrequency({
       frequency: NOTE_FREQUENCY_MAP[note][octave],
       type,
       duration,
+      volume,
     });
   }
 

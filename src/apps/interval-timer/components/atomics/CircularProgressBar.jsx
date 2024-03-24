@@ -18,7 +18,7 @@ const Circle = styled.div`
   background-color: inherit;
   text-align: center;
   margin: 20px;
-  border: 1px solid ${prop('color')};
+  border: 1px solid ${prop('$color')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,10 +40,11 @@ const Content = styled.div`
   height: 174px;
   border-radius: 50%;
   z-index: 3;
-  border: 1px solid ${prop('color')};
+  border: 1px solid ${prop('$color')};
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: inherit;
 `;
 
 const AnimationBase = styled.div`
@@ -52,7 +53,7 @@ const AnimationBase = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  border: 13px solid ${prop('color')};
+  background-color: ${prop('$color')};
   border-radius: 100px 0px 0px 100px;
   border-right: 0;
   transform-origin: right;
@@ -80,10 +81,10 @@ export function CircularProgressBar({ children, progress, bgColor, color }) {
   return (
     <Box $backgroundColor={bgColor}>
       <Circle>
-        <Overlay color={color}></Overlay>
+        <Overlay $color={color}></Overlay>
         <Content>{children}</Content>
-        <ProgressHalf $progress={progressRight} color={color}></ProgressHalf>
-        <ProgressHalf $progress={progressLeft} color={color}></ProgressHalf>
+        <ProgressHalf $progress={progressRight} $color={color}></ProgressHalf>
+        <ProgressHalf $progress={progressLeft} $color={color}></ProgressHalf>
       </Circle>
     </Box>
   );

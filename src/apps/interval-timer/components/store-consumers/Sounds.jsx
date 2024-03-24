@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSound } from '../../hooks/useSound';
 import { useValueChange } from '../../hooks/useValueChange';
 import { useWorkoutStore } from '../../model';
@@ -13,7 +13,7 @@ export function Sounds() {
   const [globalVolume, setGlobalVolume] = useState(1);
   const [playing, setPlaying] = useState(false);
 
-  const useSoundEnv = useCallback(
+  const withSoundEnv = useCallback(
     (fn) => {
       const playNote = async (props) => {
         setPlaying(true);
@@ -30,27 +30,29 @@ export function Sounds() {
     [globalVolume, soundApi]
   );
 
-  const playStartNote = useSoundEnv(
-    useCallback((playNote, phase) => {
-      switch (phase) {
-        case 'work':
-        case 'rest':
-        case 'roundReset':
-        case 'end':
-          return playNote({
-            note: 'A',
-            octave: 5,
-            type: 'sine',
-            duration: 660,
-            volume: 0.8,
-          });
-      }
-    }, [])
+  const playStartNote = useMemo(
+    () =>
+      withSoundEnv((playNote, phase) => {
+        switch (phase) {
+          case 'work':
+          case 'rest':
+          case 'roundReset':
+          case 'end':
+            return playNote({
+              note: 'A',
+              octave: 5,
+              type: 'sine',
+              duration: 660,
+              volume: 0.8,
+            });
+        }
+      }),
+    [withSoundEnv]
   );
 
-  const playCountdownNote = useSoundEnv(
-    useCallback(
-      (playNote) => {
+  const playCountdownNote = useMemo(
+    () =>
+      withSoundEnv((playNote) => {
         if (workoutStore.phase.duration > 5000) {
           switch (workoutStore.phase.name) {
             case 'start':
@@ -66,14 +68,13 @@ export function Sounds() {
               });
           }
         }
-      },
-      [workoutStore.phase.duration, workoutStore.phase.name]
-    )
+      }),
+    [withSoundEnv, workoutStore.phase.duration, workoutStore.phase.name]
   );
 
-  const playGetReadyNote = useSoundEnv(
-    useCallback(
-      (playNote) => {
+  const playGetReadyNote = useMemo(
+    () =>
+      withSoundEnv((playNote) => {
         if (workoutStore.phase.duration > 5000) {
           switch (workoutStore.phase.name) {
             case 'start':
@@ -88,9 +89,8 @@ export function Sounds() {
               });
           }
         }
-      },
-      [workoutStore.phase.duration, workoutStore.phase.name]
-    )
+      }),
+    [withSoundEnv, workoutStore.phase.duration, workoutStore.phase.name]
   );
 
   const timeLeftMs =

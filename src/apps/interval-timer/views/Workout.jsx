@@ -2,13 +2,9 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
-import { useCallback } from 'react';
-import { useInitSound } from '../hooks/useSound';
 import { Sounds } from '../components/store-consumers/Sounds';
 import { VARIANTS } from '../Theme';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
-import { FiPlay, FiPause, FiX } from 'react-icons/fi';
-import { Button } from '../components/atomics/Button';
 import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 
 const Box = styled.div`

@@ -68,7 +68,6 @@ function startInterval(state) {
 }
 
 function stopInterval(state) {
-  console.log('clearing interval', state.internal.interval);
   clearInterval(state.internal.interval);
   state.internal.internal = null;
   state.workout.active = false;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { GlobalStyles } from './GlobalStyles';
+import { GlobalStyles } from './Theme';
 import { useWorkoutStore } from './model';
 import { Workout } from './views/Workout';
 import { SoundProvider } from './hooks/useSound';

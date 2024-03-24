@@ -2,8 +2,11 @@ import { prop } from 'ramda';
 import styled from 'styled-components';
 
 const Circle = styled.div`
+  /* those 3 lines make sure a 1:1 aspect ratio is kept at all times based on the given width */
+  height: 0;
+  padding-bottom: 100%;
   width: 100%;
-  height: 100%;
+
   border-radius: 50%;
   overflow: hidden;
   position: relative;
@@ -13,7 +16,6 @@ const Circle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
 `;
 
 const Overlay = styled.div`
@@ -27,9 +29,11 @@ const Overlay = styled.div`
 `;
 
 const Content = styled.div`
-  position: relative;
-  width: 87%;
-  height: 87%;
+  position: absolute;
+  top: 7%;
+  left: 7%;
+  width: 86%;
+  height: 86%;
   border-radius: 50%;
   z-index: 3;
   border: 2px solid ${prop('$color')};

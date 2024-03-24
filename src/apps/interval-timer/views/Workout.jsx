@@ -7,9 +7,14 @@ import { VARIANTS } from '../Theme';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
 import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 
-const Box = styled.div`
+const StyledFullScreen = styled(Fullscreen)`
   color: ${(props) => VARIANTS[props.$variant].color};
   background-color: ${(props) => VARIANTS[props.$variant].bgColor};
+  display: flex;
+  justify-content: center;
+`;
+
+const Box = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -17,6 +22,10 @@ const Box = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2rem;
+
+  @media (min-width: 500px) {
+    width: 500px;
+  }
 `;
 
 const Section = styled.div`
@@ -29,8 +38,8 @@ export function Workout() {
   const workoutStore = useWorkoutStore();
 
   return (
-    <Fullscreen>
-      <Box $variant={workoutStore.phase.name}>
+    <StyledFullScreen $variant={workoutStore.phase.name}>
+      <Box>
         <Section>
           <h2>Workout Timer</h2>
           <Sounds></Sounds>
@@ -59,7 +68,7 @@ export function Workout() {
           <Link to="/">Home</Link>
         </Section>
       </Box>
-    </Fullscreen>
+    </StyledFullScreen>
   );
 }
 

@@ -23,6 +23,10 @@ const Header = styled.div`
   align-items: center;
   padding: 1rem;
   gap: 6px;
+
+  @media (min-width: 450px) {
+    width: 450px;
+  }
 `;
 
 const HeaderContent = styled.div`

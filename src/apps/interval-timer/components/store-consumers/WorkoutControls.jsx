@@ -12,7 +12,7 @@ const Box = styled.div`
   justify-content: flex-start;
   flex-direction: row;
   flex-grow: 1;
-  margin: 0 4rem;
+  margin: 0 2rem;
 `;
 
 const DynamicGap = styled.div`
@@ -26,7 +26,7 @@ export function WorkoutControls() {
   const wakeLock = useWakeLock();
 
   const color = VARIANTS[workoutStore.phase.name].color;
-  const size = '48';
+  const size = '72';
   const startWorkout = workoutStore.startWorkout;
 
   const start = useCallback(() => {

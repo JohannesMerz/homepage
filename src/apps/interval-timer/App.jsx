@@ -7,10 +7,10 @@ import { SoundProvider } from './hooks/useSound';
 const workoutSettings = {
   start: 10 * 1000,
   work: 10 * 1000,
-  rest: 15 * 1000,
+  rest: 50 * 1000,
   roundReset: 0,
-  exercises: 2,
-  rounds: 2,
+  exercises: 5,
+  rounds: 3,
 };
 
 export function Component() {

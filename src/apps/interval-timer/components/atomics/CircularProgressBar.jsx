@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Circle = styled.div`
   /* those 3 lines make sure a 1:1 aspect ratio is kept at all times based on the given width */
   height: 0;
-  padding-bottom: 100%;
+  padding-bottom: calc(100% - 4px);
   width: 100%;
 
   border-radius: 50%;

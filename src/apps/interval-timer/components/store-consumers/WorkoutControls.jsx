@@ -66,7 +66,7 @@ export function WorkoutControls() {
           color={color}
           onClick={workoutStore.resetWorkout}
           disabled={
-            !workoutStore.workout.active && !workoutStore.workout.progressMs
+            workoutStore.workout.active || !workoutStore.workout.progressMs
           }
         >
           <FiX size={size}></FiX>

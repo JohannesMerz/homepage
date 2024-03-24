@@ -63,7 +63,7 @@ const ProgressHalf = styled.div.attrs((props) => {
 `;
 
 function progressToDegrees(progress) {
-  return Math.round((progress * 360) / 100);
+  return (progress * 360) / 100;
 }
 
 export function CircularProgressBar({ children, progress, bgColor, color }) {

@@ -19,6 +19,8 @@ const NOTE_FREQUENCY_MAP = {
   B: [30.87, 61.74, 123.47, 246.94, 493.88, 987.77, 1975.53, 3951, 7902.13],
 };
 
+const FADE_OUT_MS = 100;
+
 export function createAudioContext() {
   if (!window.AudioContext) {
     if (!window.webkitAudioContext) {
@@ -38,16 +40,25 @@ export function createAudioContext() {
     volume = 1,
   }) {
     const osc = context.createOscillator();
+    osc.connect(volumeControl);
 
     osc.frequency.value = frequency;
     osc.type = type;
-    volumeControl.gain.setValueAtTime(volume, context.currentTime);
-
-    osc.connect(volumeControl);
+    volumeControl.gain.setValueAtTime(0, context.currentTime);
+    volumeControl.gain.linearRampToValueAtTime(
+      volume,
+      context.currentTime + 10 / 1000
+    );
 
     osc.start(0);
 
-    await sleep(duration);
+    await sleep(duration - FADE_OUT_MS);
+    volumeControl.gain.linearRampToValueAtTime(
+      0,
+      context.currentTime + FADE_OUT_MS / 1000
+    );
+    await sleep(FADE_OUT_MS);
+
     osc.stop(0);
     osc.disconnect(volumeControl);
 

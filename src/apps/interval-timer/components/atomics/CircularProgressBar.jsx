@@ -9,7 +9,7 @@ const Circle = styled.div`
   position: relative;
   background-color: ${prop('$backgroundColor')};
   text-align: center;
-  border: 1px solid ${prop('$color')};
+  border: 2px solid ${prop('$color')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,7 +32,7 @@ const Content = styled.div`
   height: 87%;
   border-radius: 50%;
   z-index: 3;
-  border: 1px solid ${prop('$color')};
+  border: 2px solid ${prop('$color')};
   display: flex;
   justify-content: center;
   align-items: center;

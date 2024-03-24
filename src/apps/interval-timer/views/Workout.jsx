@@ -2,11 +2,10 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
-import { useCallback } from 'react';
-import { useInitSound } from '../hooks/useSound';
 import { Sounds } from '../components/store-consumers/Sounds';
 import { VARIANTS } from '../Theme';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
+import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 
 const Box = styled.div`
   color: ${(props) => VARIANTS[props.$variant].color};
@@ -20,17 +19,14 @@ const Box = styled.div`
   gap: 2rem;
 `;
 
-const Section = styled.div``;
+const Section = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 export function Workout() {
   const workoutStore = useWorkoutStore();
-
-  const startWorkout = workoutStore.startWorkout;
-  const initSound = useInitSound();
-  const start = useCallback(() => {
-    initSound();
-    startWorkout();
-  }, [startWorkout, initSound]);
 
   return (
     <Fullscreen>
@@ -41,6 +37,9 @@ export function Workout() {
         </Section>
         <Section>
           <PhaseProgress></PhaseProgress>
+        </Section>
+        <Section>
+          <WorkoutControls></WorkoutControls>
         </Section>
         <Section>
           <h3>setting sections, wip</h3>
@@ -57,24 +56,15 @@ export function Workout() {
             {workoutStore.settings.rounds}
           </p>
 
-          <p>
-            {!workoutStore.workout.active ? (
-              <button onClick={start}>start</button>
-            ) : (
-              <button onClick={workoutStore.resetWorkout}>reset</button>
-            )}
-          </p>
-
-          <p>
-            {workoutStore.workout.active ? (
-              <button onClick={workoutStore.pauseWorkout}>pause</button>
-            ) : (
-              <button onClick={workoutStore.resumeWorkout}>resume</button>
-            )}
-          </p>
           <Link to="/">Home</Link>
         </Section>
       </Box>
     </Fullscreen>
   );
 }
+
+// : (
+//               <Button color={color} onClick={workoutStore.resumeWorkout}>
+//                 resume
+//               </Button>
+//             )}

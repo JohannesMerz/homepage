@@ -16,6 +16,10 @@ export const GlobalStyles = createGlobalStyle`
     text-transform: uppercase;
     margin: 0;
   }
+
+  h1 {
+    font-size: 28px;
+  }
 `;
 
 export const VARIANTS = {

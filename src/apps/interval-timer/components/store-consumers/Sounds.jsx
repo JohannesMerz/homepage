@@ -19,7 +19,7 @@ export function Sounds() {
             note: 'A',
             octave: 5,
             type: 'sine',
-            duration: 750,
+            duration: 660,
             volume: 0.8,
           });
       }
@@ -38,7 +38,7 @@ export function Sounds() {
             note: 'A',
             octave: 4,
             type: 'sine',
-            duration: 750,
+            duration: 660,
             volume: 0.5,
           });
       }
@@ -55,7 +55,7 @@ export function Sounds() {
             note: 'A',
             octave: 4,
             type: 'sine',
-            duration: 750,
+            duration: 660,
             volume: 0.5,
           });
       }

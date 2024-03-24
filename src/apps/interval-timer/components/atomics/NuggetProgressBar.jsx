@@ -14,15 +14,18 @@ const Nugget = styled.div`
   border-radius: 3px;
   flex-grow: 1;
   background-color: ${prop('$backgroundColor')};
-  opacity: ${(props) => (props.active ? 1 : 0.33)};
+  opacity: ${(props) => (props.$active ? 1 : 0.33)};
 `;
 
 export function NuggetProgressBar({ className, nuggetCount, progress, color }) {
-  console.log({ nuggetCount, progress, color });
   return (
     <Box className={className}>
       {Array.from(Array(nuggetCount).keys()).map((_, i) => (
-        <Nugget key={i} $backgroundColor={color} active={i < progress}></Nugget>
+        <Nugget
+          key={i}
+          $backgroundColor={color}
+          $active={i < progress}
+        ></Nugget>
       ))}
     </Box>
   );

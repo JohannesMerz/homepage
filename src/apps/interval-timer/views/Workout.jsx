@@ -6,11 +6,28 @@ import { Sounds } from '../components/store-consumers/Sounds';
 import { VARIANTS } from '../Theme';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
 import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
+import { Settings } from '../components/store-consumers/Settings';
 
 const StyledFullScreen = styled(Fullscreen)`
-  color: ${(props) => VARIANTS[props.$variant].color};
-  background-color: ${(props) => VARIANTS[props.$variant].bgColor};
+  color: ${(props) => props.$variant.color};
+  background-color: ${(props) => props.$variant.bgColor};
   display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+`;
+
+const HeaderContent = styled.div`
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
   justify-content: center;
 `;
 
@@ -19,10 +36,10 @@ const Box = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
-  gap: 2rem;
-  margin: 2rem;
+  gap: 4rem;
+  padding: 3rem 2rem;
 
   @media (min-width: 450px) {
     width: 450px;
@@ -35,46 +52,44 @@ const Section = styled.div`
   justify-content: center;
 `;
 
+const Footer = styled.div`
+  bottom: 0;
+  position: absolute;
+  min-height: 40px;
+  width: 100%;
+  color: ${(props) => props.$variant.bgColor};
+  background-color: ${(props) => props.$variant.color};
+  display: flex;
+  align-items: center;
+`;
+
 export function Workout() {
   const workoutStore = useWorkoutStore();
 
+  const variant = VARIANTS[workoutStore.phase.name];
+
   return (
-    <StyledFullScreen $variant={workoutStore.phase.name}>
+    <StyledFullScreen $variant={variant}>
+      <Header>
+        <HeaderContent>
+          <h1>Workout Timer</h1>
+        </HeaderContent>
+        <Settings></Settings>
+        <Sounds></Sounds>
+      </Header>
       <Box>
-        <Section>
-          <h2>Workout Timer</h2>
-          <Sounds></Sounds>
-        </Section>
         <Section>
           <PhaseProgress></PhaseProgress>
         </Section>
         <Section>
           <WorkoutControls></WorkoutControls>
         </Section>
+      </Box>
+      <Footer $variant={variant}>
         <Section>
-          <h3>setting sections, wip</h3>
-
-          <p>active: {workoutStore.workout.active.toString()}</p>
-          <p>ended: {workoutStore.workout.ended.toString()}</p>
-
-          <p>
-            exercise: {workoutStore.workout.currentExercise + 1}/
-            {workoutStore.settings.exercises}
-          </p>
-          <p>
-            round: {workoutStore.workout.currentRound + 1}/
-            {workoutStore.settings.rounds}
-          </p>
-
           <Link to="/">Home</Link>
         </Section>
-      </Box>
+      </Footer>
     </StyledFullScreen>
   );
 }
-
-// : (
-//               <Button color={color} onClick={workoutStore.resumeWorkout}>
-//                 resume
-//               </Button>
-//             )}

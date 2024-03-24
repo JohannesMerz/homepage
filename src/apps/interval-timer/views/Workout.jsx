@@ -1,43 +1,27 @@
 import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Times } from '../components/store-consumers/Times';
 import { useCallback } from 'react';
 import { useInitSound } from '../hooks/useSound';
 import { Sounds } from '../components/store-consumers/Sounds';
-
-const VARIANTS = {
-  work: css`
-    color: var(--workPrimary);
-    background-color: var(--workSecondary);
-  `,
-  rest: css`
-    color: var(--restPrimary);
-    background-color: var(--restSecondary);
-  `,
-  start: css`
-    color: var(--inactivePrimary);
-    background-color: var(--inactiveSecondary);
-  `,
-  end: css`
-    color: var(--inactivePrimary);
-    background-color: var(--inactiveSecondary);
-  `,
-  roundReset: css`
-    color: var(--inactivePrimary);
-    background-color: var(--inactiveSecondary);
-  `,
-};
+import { VARIANTS } from '../Theme';
+import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
 
 const Box = styled.div`
-  ${(props) => VARIANTS[props.variant]}
+  color: ${(props) => VARIANTS[props.$variant].color};
+  background-color: ${(props) => VARIANTS[props.$variant].bgColor};
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  gap: 2rem;
 `;
+
+const Section = styled.div``;
 
 export function Workout() {
   const workoutStore = useWorkoutStore();
@@ -51,39 +35,46 @@ export function Workout() {
 
   return (
     <Fullscreen>
-      <Box variant={workoutStore.phase.name}>
-        <h2>Interval Timer</h2>
-        <p>current phase: {workoutStore.phase.name}</p>
-        <Sounds></Sounds>
-        <Times></Times>
-        <p>active: {workoutStore.workout.active.toString()}</p>
-        <p>ended: {workoutStore.workout.ended.toString()}</p>
+      <Box $variant={workoutStore.phase.name}>
+        <Section>
+          <h2>Workout Timer</h2>
+          <Sounds></Sounds>
+        </Section>
+        <Section>
+          <PhaseProgress></PhaseProgress>
+        </Section>
+        <Section>
+          <h3>setting sections, wip</h3>
 
-        <p>
-          exercise: {workoutStore.workout.currentExercise + 1}/
-          {workoutStore.settings.exercises}
-        </p>
-        <p>
-          round: {workoutStore.workout.currentRound + 1}/
-          {workoutStore.settings.rounds}
-        </p>
+          <p>active: {workoutStore.workout.active.toString()}</p>
+          <p>ended: {workoutStore.workout.ended.toString()}</p>
 
-        <p>
-          {['start', 'end'].includes(workoutStore.phase.name) ? (
-            <button onClick={start}>start</button>
-          ) : (
-            <button onClick={workoutStore.resetWorkout}>reset</button>
-          )}
-        </p>
+          <p>
+            exercise: {workoutStore.workout.currentExercise + 1}/
+            {workoutStore.settings.exercises}
+          </p>
+          <p>
+            round: {workoutStore.workout.currentRound + 1}/
+            {workoutStore.settings.rounds}
+          </p>
 
-        <p>
-          {workoutStore.workout.active ? (
-            <button onClick={workoutStore.pauseWorkout}>pause</button>
-          ) : (
-            <button onClick={workoutStore.resumeWorkout}>resume</button>
-          )}
-        </p>
-        <Link to="/">Home</Link>
+          <p>
+            {['start', 'end'].includes(workoutStore.phase.name) ? (
+              <button onClick={start}>start</button>
+            ) : (
+              <button onClick={workoutStore.resetWorkout}>reset</button>
+            )}
+          </p>
+
+          <p>
+            {workoutStore.workout.active ? (
+              <button onClick={workoutStore.pauseWorkout}>pause</button>
+            ) : (
+              <button onClick={workoutStore.resumeWorkout}>resume</button>
+            )}
+          </p>
+          <Link to="/">Home</Link>
+        </Section>
       </Box>
     </Fullscreen>
   );

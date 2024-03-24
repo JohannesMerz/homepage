@@ -58,7 +58,7 @@ export function Workout() {
           </p>
 
           <p>
-            {['start', 'end'].includes(workoutStore.phase.name) ? (
+            {!workoutStore.workout.active ? (
               <button onClick={start}>start</button>
             ) : (
               <button onClick={workoutStore.resetWorkout}>reset</button>

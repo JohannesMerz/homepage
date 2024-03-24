@@ -13,7 +13,7 @@ export function setSettings(state, settings) {
 }
 
 export function startWorkout(state) {
-  initWorkoutState(state);
+  initWorkoutState(state, true);
   startInterval(state);
 }
 
@@ -27,7 +27,7 @@ export function resumeWorkout(state) {
 
 export function resetWorkout(state) {
   stopInterval(state);
-  initWorkoutState(state);
+  initWorkoutState(state, false);
 }
 
 export function updateProgress(state) {
@@ -43,11 +43,11 @@ export function updateProgress(state) {
   }
 }
 
-function initWorkoutState(state) {
+function initWorkoutState(state, active) {
   state.workout = {
     currentExercise: 0,
     currentRound: 0,
-    active: true,
+    active,
     ended: false,
     progressMs: 0,
   };

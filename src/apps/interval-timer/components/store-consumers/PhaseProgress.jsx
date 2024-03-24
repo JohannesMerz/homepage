@@ -22,6 +22,11 @@ const PHASE_LABELS = {
   roundReset: 'prepare',
 };
 
+const Box = styled.div`
+  width: 66vw;
+  height: 66vw;
+`;
+
 export function PhaseProgress() {
   const workoutStore = useWorkoutStore();
 
@@ -35,11 +40,13 @@ export function PhaseProgress() {
   const variant = VARIANTS[workoutStore.phase.name];
 
   return (
-    <CircularProgressBar progress={progressPercentage} {...variant}>
-      <Content>
-        <h3>{PHASE_LABELS[workoutStore.phase.name]}</h3>
-        <RemainingTime time={timeLeftMs}></RemainingTime>
-      </Content>
-    </CircularProgressBar>
+    <Box>
+      <CircularProgressBar progress={progressPercentage} {...variant}>
+        <Content>
+          <h3>{PHASE_LABELS[workoutStore.phase.name]}</h3>
+          <RemainingTime time={timeLeftMs}></RemainingTime>
+        </Content>
+      </CircularProgressBar>
+    </Box>
   );
 }

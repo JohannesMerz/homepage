@@ -22,9 +22,10 @@ const Box = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  margin: 2rem;
 
-  @media (min-width: 500px) {
-    width: 500px;
+  @media (min-width: 450px) {
+    width: 450px;
   }
 `;
 

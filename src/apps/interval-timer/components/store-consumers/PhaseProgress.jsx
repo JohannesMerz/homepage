@@ -23,8 +23,8 @@ const PHASE_LABELS = {
 };
 
 const Box = styled.div`
-  width: 66vw;
-  height: 66vw;
+  width: 100%;
+  height: 100%;
 `;
 
 export function PhaseProgress() {

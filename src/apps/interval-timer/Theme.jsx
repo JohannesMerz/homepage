@@ -14,6 +14,7 @@ export const GlobalStyles = createGlobalStyle`
 
   h1, h2, h3 {
     text-transform: uppercase;
+    margin: 0;
   }
 `;
 

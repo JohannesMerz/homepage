@@ -27,7 +27,7 @@ export function Sounds() {
     [soundApi]
   );
 
-  const playGetReadyNote = useCallback(() => {
+  const playCountdownNote = useCallback(() => {
     if (workoutStore.phase.duration > 5000) {
       switch (workoutStore.phase.name) {
         case 'start':
@@ -45,12 +45,29 @@ export function Sounds() {
     }
   }, [soundApi, workoutStore]);
 
+  const playGetReadyNote = useCallback(() => {
+    if (workoutStore.phase.duration > 5000) {
+      switch (workoutStore.phase.name) {
+        case 'start':
+        case 'rest':
+        case 'roundReset':
+          soundApi.playNote({
+            note: 'A',
+            octave: 4,
+            type: 'sine',
+            duration: 750,
+            volume: 0.5,
+          });
+      }
+    }
+  }, [soundApi, workoutStore]);
+
   const timeLeftMs =
     workoutStore.phase.duration - workoutStore.phase.progressMs;
 
   useAtThresholdPassed('desc', 5000, timeLeftMs, playGetReadyNote);
-  useAtThresholdPassed('desc', 2000, timeLeftMs, playGetReadyNote);
-  useAtThresholdPassed('desc', 1000, timeLeftMs, playGetReadyNote);
+  useAtThresholdPassed('desc', 2000, timeLeftMs, playCountdownNote);
+  useAtThresholdPassed('desc', 1000, timeLeftMs, playCountdownNote);
 
   useValueChange(workoutStore.phase.name, playStartNote);
 

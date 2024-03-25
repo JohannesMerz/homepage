@@ -18,11 +18,12 @@ export function Component() {
 
   useEffect(() => {
     workoutStore.setSettings(workoutSettings);
-  }, [workoutStore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SoundProvider>
-      <GlobalStyles />
+      <GlobalStyles $variant={workoutStore.phase?.name || 'start'} />
       {workoutStore.settings ? <Workout></Workout> : null}
     </SoundProvider>
   );

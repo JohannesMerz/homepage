@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { VARIANTS } from '../../Theme';
 import { useWorkoutStore } from '../../model';
 import { CircularProgressBar } from '../atomics/CircularProgressBar';
 import { Time } from '../atomics/Time';
@@ -46,23 +45,27 @@ export function PhaseProgress() {
     ? (100 * workoutStore.phase.progressMs) / workoutStore.phase.duration
     : 0;
 
-  const variant = VARIANTS[workoutStore.phase.name];
-
   return (
     <Box>
-      <CircularProgressBar progress={progressPercentage} {...variant}>
+      <CircularProgressBar
+        progress={progressPercentage}
+        color="var(--colorPrimary)"
+        bgColor="var(--colorSecondary)"
+      >
         <Content>
           <h2>{PHASE_LABELS[workoutStore.phase.name]}</h2>
           <RemainingTime time={timeLeftMs}></RemainingTime>
           <StyledNuggetBar
             nuggetCount={workoutStore.settings.exercises}
             progress={workoutStore.workout.currentExercise + 1}
-            {...variant}
+            color="var(--colorPrimary)"
+            bgColor="var(--colorSecondary)"
           ></StyledNuggetBar>
           <StyledNuggetBar
             nuggetCount={workoutStore.settings.rounds}
             progress={workoutStore.workout.currentRound + 1}
-            {...variant}
+            color="var(--colorPrimary)"
+            bgColor="var(--colorSecondary)"
           ></StyledNuggetBar>
         </Content>
       </CircularProgressBar>

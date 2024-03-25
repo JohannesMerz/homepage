@@ -10,7 +10,6 @@ const Box = styled.div`
 
 const Label = styled.div`
   text-align: right;
-
   width: 40%;
 `;
 

@@ -1,7 +1,6 @@
 import { useWorkoutStore } from '../../model';
 import { Button } from '../atomics/Button';
 import { FiSettings, FiX } from 'react-icons/fi';
-import { VARIANTS } from '../../Theme';
 import { useState } from 'react';
 import styled from 'styled-components';
 
@@ -12,10 +11,10 @@ const SettingsInput = styled.div`
   width: calc(100% - 2rem);
   height: 80%;
   margin: 1rem;
-  background-color: ${VARIANTS.start.bgColor};
-  border: 2px solid ${VARIANTS.start.color};
+  background-color: var(--colorSecondary);
+  border: 2px solid var(--colorPrimary);
   border-radius: 6px;
-  box-shadow: 0px 0px 4px ${VARIANTS.start.color};
+  box-shadow: 0px 0px 4px var(--colorPrimary);
   z-index: 1000;
 `;
 
@@ -24,12 +23,9 @@ export function Settings() {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const color = VARIANTS[workoutStore.phase.name].color;
-
   return (
     <>
       <Button
-        color={color}
         disabled={
           settingsOpen ||
           workoutStore.workout.active ||
@@ -43,7 +39,7 @@ export function Settings() {
         <SettingsInput>
           <p>this will be the settings section</p>
           <p>{JSON.stringify(workoutStore.settings, null, 2)}</p>
-          <Button color={color} onClick={() => setSettingsOpen(false)}>
+          <Button onClick={() => setSettingsOpen(false)}>
             <FiX size="28"></FiX>
           </Button>
         </SettingsInput>

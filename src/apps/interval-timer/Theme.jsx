@@ -10,6 +10,10 @@ export const GlobalStyles = createGlobalStyle`
       --restSecondary: #fb8484;
       --inactivePrimary: #766118;
       --inactiveSecondary: #f9dc74;
+
+      /* selected theme */
+      --colorPrimary: ${(props) => VARIANTS[props.$variant].colorPrimary};
+      --colorSecondary: ${(props) => VARIANTS[props.$variant].colorSecondary};
     }
 
   h1, h2, h3 {
@@ -24,23 +28,23 @@ export const GlobalStyles = createGlobalStyle`
 
 export const VARIANTS = {
   work: {
-    color: 'var(--workPrimary)',
-    bgColor: 'var(--workSecondary)',
+    colorPrimary: 'var(--workPrimary)',
+    colorSecondary: 'var(--workSecondary)',
   },
   rest: {
-    color: 'var(--restPrimary)',
-    bgColor: 'var(--restSecondary)',
+    colorPrimary: 'var(--restPrimary)',
+    colorSecondary: 'var(--restSecondary)',
   },
   start: {
-    color: 'var(--inactivePrimary)',
-    bgColor: 'var(--inactiveSecondary)',
+    colorPrimary: 'var(--inactivePrimary)',
+    colorSecondary: 'var(--inactiveSecondary)',
   },
   end: {
-    color: 'var(--inactivePrimary)',
-    bgColor: 'var(--inactiveSecondary)',
+    colorPrimary: 'var(--inactivePrimary)',
+    colorSecondary: 'var(--inactiveSecondary)',
   },
   roundReset: {
-    color: 'var(--inactivePrimary)',
-    bgColor: 'var(--inactiveSecondary)',
+    colorPrimary: 'var(--inactivePrimary)',
+    colorSecondary: 'var(--inactiveSecondary)',
   },
 };

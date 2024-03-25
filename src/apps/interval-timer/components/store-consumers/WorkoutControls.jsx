@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { VARIANTS } from '../../Theme';
 import { useWorkoutStore } from '../../model';
 import { Button } from '../atomics/Button';
 import { FiPlay, FiPause, FiX } from 'react-icons/fi';
@@ -25,7 +24,6 @@ export function WorkoutControls() {
   const initSound = useInitSound();
   const wakeLock = useWakeLock();
 
-  const color = VARIANTS[workoutStore.phase.name].color;
   const size = '72';
   const startWorkout = workoutStore.startWorkout;
 
@@ -46,7 +44,6 @@ export function WorkoutControls() {
     <Box>
       {!workoutStore.workout.active && (
         <Button
-          color={color}
           onClick={
             workoutStore.workout.progressMs ? workoutStore.resumeWorkout : start
           }
@@ -55,7 +52,7 @@ export function WorkoutControls() {
         </Button>
       )}
       {workoutStore.workout.active && (
-        <Button color={color} onClick={workoutStore.pauseWorkout}>
+        <Button onClick={workoutStore.pauseWorkout}>
           <FiPause size={size}></FiPause>
         </Button>
       )}
@@ -63,7 +60,6 @@ export function WorkoutControls() {
       <DynamicGap></DynamicGap>
       {
         <Button
-          color={color}
           onClick={workoutStore.resetWorkout}
           disabled={
             workoutStore.workout.active || !workoutStore.workout.progressMs

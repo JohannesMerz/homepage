@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useWorkoutStore } from '../model';
 import { Fullscreen } from '../components/atomics/Fullscreen';
 import { Sounds } from '../components/store-consumers/Sounds';
-import { VARIANTS } from '../Theme';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
 import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 import { Settings } from '../components/store-consumers/Settings';
 
 const StyledFullScreen = styled(Fullscreen)`
-  color: ${(props) => props.$variant.color};
-  background-color: ${(props) => props.$variant.bgColor};
+  color: var(--colorPrimary);
+  background-color: var(--colorSecondary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,15 +34,15 @@ const HeaderContent = styled.div`
   justify-content: left;
 `;
 
-const Box = styled.div`
+const Content = styled.div`
   width: 100%;
-  height: 100%;
+
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
   gap: 4rem;
   padding: 3rem 2rem;
+  flex-grow: 1;
 
   @media (min-width: 450px) {
     width: 450px;
@@ -58,23 +56,17 @@ const Section = styled.div`
 `;
 
 const Footer = styled.div`
-  bottom: 0;
-  position: absolute;
   min-height: 40px;
   width: 100%;
-  color: ${(props) => props.$variant.bgColor};
-  background-color: ${(props) => props.$variant.color};
+  background-color: var(--colorPrimary);
+  color: var(--colorSecondary);
   display: flex;
   align-items: center;
 `;
 
 export function Workout() {
-  const workoutStore = useWorkoutStore();
-
-  const variant = VARIANTS[workoutStore.phase.name];
-
   return (
-    <StyledFullScreen $variant={variant}>
+    <StyledFullScreen>
       <Header>
         <HeaderContent>
           <h1>Workout Timer</h1>
@@ -82,15 +74,15 @@ export function Workout() {
         <Settings></Settings>
         <Sounds></Sounds>
       </Header>
-      <Box>
+      <Content>
         <Section>
           <PhaseProgress></PhaseProgress>
         </Section>
         <Section>
           <WorkoutControls></WorkoutControls>
         </Section>
-      </Box>
-      <Footer $variant={variant}>
+      </Content>
+      <Footer>
         <Section>
           <Link to="/">Home</Link>
         </Section>

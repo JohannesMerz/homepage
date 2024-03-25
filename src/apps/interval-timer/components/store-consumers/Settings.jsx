@@ -1,7 +1,7 @@
 import { useWorkoutStore } from '../../model';
 import { Button } from '../atomics/Button';
 import { FiSettings, FiX } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Field } from '../atomics/Field';
 
@@ -42,10 +42,24 @@ const INITIAL_SETTINGS = {
   rounds: 3,
 };
 
+function getInitialInput(settings) {
+  return {
+    ...settings,
+    start: settings.start / 1000,
+    work: settings.work / 1000,
+    rest: settings.rest / 1000,
+    roundReset: settings.roundReset / 1000,
+  };
+}
+
 export function Settings() {
   const workoutStore = useWorkoutStore();
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const inputBufferRef = useRef(
+    getInitialInput(workoutStore.settings || INITIAL_SETTINGS)
+  );
 
   useEffect(() => {
     if (!workoutStore.settings) {
@@ -62,6 +76,7 @@ export function Settings() {
   };
 
   const onCountChange = (fieldName) => (e) => {
+    inputBufferRef.current[fieldName] = e.target.value;
     const value = parseInt(e.target.value || '1');
     if (value < 1) {
       setFieldValue(fieldName, 1);
@@ -71,9 +86,17 @@ export function Settings() {
   };
 
   const onTimeChange = (fieldName) => (e) => {
+    inputBufferRef.current[fieldName] = e.target.value;
     const value = parseInt(e.target.value || '0');
 
     setFieldValue(fieldName, value * 1000);
+  };
+
+  const open = () => {
+    inputBufferRef.current = getInitialInput(
+      workoutStore.settings || INITIAL_SETTINGS
+    );
+    setSettingsOpen(true);
   };
 
   return (
@@ -84,7 +107,7 @@ export function Settings() {
           workoutStore.workout.active ||
           (workoutStore.workout.progressMs && workoutStore.phase.name !== 'end')
         }
-        onClick={() => setSettingsOpen(true)}
+        onClick={open}
       >
         <FiSettings size="28"></FiSettings>
       </Button>
@@ -98,32 +121,32 @@ export function Settings() {
           </Header>
           <SettingsField
             label="Rounds:"
-            value={workoutStore.settings.rounds}
+            value={inputBufferRef.current.rounds}
             onChange={onCountChange('rounds')}
           ></SettingsField>
           <SettingsField
             label="Exercises:"
-            value={workoutStore.settings.exercises}
+            value={inputBufferRef.current.exercises}
             onChange={onCountChange('exercises')}
           ></SettingsField>
           <SettingsField
             label="Start(s):"
-            value={workoutStore.settings.start / 1000}
+            value={inputBufferRef.current.start}
             onChange={onTimeChange('start')}
           ></SettingsField>
           <SettingsField
             label="Work(s):"
-            value={workoutStore.settings.work / 1000}
+            value={inputBufferRef.current.work}
             onChange={onTimeChange('work')}
           ></SettingsField>
           <SettingsField
             label="Rest(s):"
-            value={workoutStore.settings.rest / 1000}
+            value={inputBufferRef.current.rest}
             onChange={onTimeChange('rest')}
           ></SettingsField>
           <SettingsField
             label="Reset(s):"
-            value={workoutStore.settings.roundReset / 1000}
+            value={inputBufferRef.current.roundReset}
             onChange={onTimeChange('roundReset')}
           ></SettingsField>
         </SettingsInput>

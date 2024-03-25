@@ -1,10 +1,14 @@
 // all functions in here manipulate a given state but don't call a setter on their own.
 // This way we can combine them together easily, also easier to unit test the logic like this
 
+import { lsSetObject } from './localStorage';
+
 const TICK_TIME_MS = 10;
 
 export function setSettings(state, settings) {
+  lsSetObject('settings', settings);
   state.settings = settings;
+
   state.phase = {
     name: 'start',
     duration: state.settings.start,

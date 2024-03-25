@@ -5,15 +5,7 @@ import { Sounds } from '../components/store-consumers/Sounds';
 import { PhaseProgress } from '../components/store-consumers/PhaseProgress';
 import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 import { Settings } from '../components/store-consumers/Settings';
-
-const StyledFullScreen = styled(Fullscreen)`
-  color: var(--colorPrimary);
-  background-color: var(--colorSecondary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
+import { useWorkoutStore } from '../model';
 
 const Header = styled.div`
   width: 100%;
@@ -65,8 +57,10 @@ const Footer = styled.div`
 `;
 
 export function Workout() {
+  const workoutStore = useWorkoutStore();
+
   return (
-    <StyledFullScreen>
+    <Fullscreen>
       <Header>
         <HeaderContent>
           <h1>Workout Timer</h1>
@@ -75,18 +69,22 @@ export function Workout() {
         <Sounds></Sounds>
       </Header>
       <Content>
-        <Section>
-          <PhaseProgress></PhaseProgress>
-        </Section>
-        <Section>
-          <WorkoutControls></WorkoutControls>
-        </Section>
+        {!!workoutStore.settings && (
+          <>
+            <Section>
+              <PhaseProgress></PhaseProgress>
+            </Section>
+            <Section>
+              <WorkoutControls></WorkoutControls>
+            </Section>
+          </>
+        )}
       </Content>
       <Footer>
         <Section>
           <Link to="/">Home</Link>
         </Section>
       </Footer>
-    </StyledFullScreen>
+    </Fullscreen>
   );
 }

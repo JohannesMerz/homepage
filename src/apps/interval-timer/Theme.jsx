@@ -3,18 +3,22 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
   :root {
-      /* colors */
-      --workPrimary: #1c8339;
-      --workSecondary: #9ffe93;
-      --restPrimary: #9f1919;
-      --restSecondary: #fb8484;
-      --inactivePrimary: #766118;
-      --inactiveSecondary: #f9dc74;
+    /* colors */
+    --workPrimary: #1c8339;
+    --workSecondary: #9ffe93;
+    --restPrimary: #9f1919;
+    --restSecondary: #fb8484;
+    --inactivePrimary: #766118;
+    --inactiveSecondary: #f9dc74;
 
-      /* selected theme */
-      --colorPrimary: ${(props) => VARIANTS[props.$variant].colorPrimary};
-      --colorSecondary: ${(props) => VARIANTS[props.$variant].colorSecondary};
-    }
+    /* selected theme */
+    --colorPrimary: ${(props) => VARIANTS[props.$variant].colorPrimary};
+    --colorSecondary: ${(props) => VARIANTS[props.$variant].colorSecondary};
+  }
+
+  * {
+    font-size: 24px;
+  }
 
   h1, h2, h3 {
     text-transform: uppercase;
@@ -23,6 +27,9 @@ export const GlobalStyles = createGlobalStyle`
 
   h1 {
     font-size: 28px;
+  }
+  h2, h3 {
+    font-size: 24px;
   }
 `;
 

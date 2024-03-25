@@ -49,7 +49,7 @@ const workoutStore = create(
 
     phase: {
       name: 'start',
-      duration: 0,
+      duration: lsGetObject('settings')?.start || 0,
       progressMs: 0,
     },
   }))

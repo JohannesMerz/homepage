@@ -8,6 +8,12 @@ const TICK_TIME_MS = 10;
 export function setSettings(state, settings) {
   lsSetObject('settings', settings);
   state.settings = settings;
+
+  state.phase = {
+    name: 'start',
+    duration: state.settings.start,
+    progressMs: 0,
+  };
 }
 
 export function startWorkout(state) {

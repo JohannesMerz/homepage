@@ -7,15 +7,6 @@ import { WorkoutControls } from '../components/store-consumers/WorkoutControls';
 import { Settings } from '../components/store-consumers/Settings';
 import { useWorkoutStore } from '../model';
 
-const StyledFullScreen = styled(Fullscreen)`
-  color: var(--colorPrimary);
-  background-color: var(--colorSecondary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
 const Header = styled.div`
   width: 100%;
   display: flex;
@@ -69,7 +60,7 @@ export function Workout() {
   const workoutStore = useWorkoutStore();
 
   return (
-    <StyledFullScreen>
+    <Fullscreen>
       <Header>
         <HeaderContent>
           <h1>Workout Timer</h1>
@@ -94,6 +85,6 @@ export function Workout() {
           <Link to="/">Home</Link>
         </Section>
       </Footer>
-    </StyledFullScreen>
+    </Fullscreen>
   );
 }

@@ -1,7 +1,7 @@
 import { useWorkoutStore } from '../../model';
 import { Button } from '../atomics/Button';
 import { FiSettings, FiX } from 'react-icons/fi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const SettingsInput = styled.div`
@@ -18,10 +18,21 @@ const SettingsInput = styled.div`
   z-index: 1000;
 `;
 
+const workoutSettings = {
+  start: 10 * 1000,
+  work: 10 * 1000,
+  rest: 50 * 1000,
+  roundReset: 0,
+  exercises: 5,
+  rounds: 3,
+};
+
 export function Settings() {
   const workoutStore = useWorkoutStore();
 
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(!workoutStore.settings);
+
+  console.log('settings', workoutStore.settings);
 
   return (
     <>
@@ -39,6 +50,9 @@ export function Settings() {
         <SettingsInput>
           <p>this will be the settings section</p>
           <p>{JSON.stringify(workoutStore.settings, null, 2)}</p>
+          <Button onClick={() => workoutStore.setSettings(workoutSettings)}>
+            add settings
+          </Button>
           <Button onClick={() => setSettingsOpen(false)}>
             <FiX size="28"></FiX>
           </Button>

@@ -9,6 +9,7 @@ import {
   resumeWorkout,
   resetWorkout,
 } from './methods';
+import { lsGetObject } from './localStorage';
 
 const workoutStore = create(
   immer((set) => ({
@@ -36,7 +37,7 @@ const workoutStore = create(
       },
     },
 
-    settings: null,
+    settings: lsGetObject('settings'),
 
     workout: {
       currentExercise: 0,
@@ -46,7 +47,11 @@ const workoutStore = create(
       progressMs: 0,
     },
 
-    phase: null,
+    phase: {
+      name: 'start',
+      duration: 0,
+      progressMs: 0,
+    },
   }))
 );
 

@@ -1,3 +1,4 @@
+import { Box, Headline, Paragraph } from '@bojagi/pablo';
 import { Link, useRouteError } from 'react-router-dom';
 
 export function ErrorPage() {
@@ -5,13 +6,13 @@ export function ErrorPage() {
   console.error(error);
 
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
+    <Box id="error-page">
+      <Headline>Oops!</Headline>
+      <Paragraph>Sorry, an unexpected error has occurred.</Paragraph>
+      <Paragraph>
         <i>{error.statusText || error.message}</i>
-      </p>
+      </Paragraph>
       <Link to="/">back</Link>
-    </div>
+    </Box>
   );
 }

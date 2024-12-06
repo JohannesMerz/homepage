@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { ErrorPage } from './components/ErrorPage';
 import { homeRoutes } from './apps/home/routes';
+import { ThemeProvider } from './Theme';
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -18,7 +19,11 @@ const router = createHashRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
 
 export default App;
